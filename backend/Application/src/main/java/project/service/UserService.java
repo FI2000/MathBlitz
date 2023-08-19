@@ -5,7 +5,6 @@ import project.persistence.model.UserProfile;
 import project.persistence.repository.UserRepository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class UserService {
@@ -19,7 +18,7 @@ public class UserService {
         this.userRepository.save(userProfile);
     }
 
-    public Optional<UserProfile> getUser(UUID userId) {
+    public Optional<UserProfile> getUser(Long userId) {
         return this.userRepository.findById(userId);
     }
 
