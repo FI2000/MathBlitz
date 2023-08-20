@@ -2,6 +2,48 @@ import React from 'react'
 import styled from 'styled-components'
 import '../fonts.css'
 import { useNavigate } from 'react-router-dom'
+import { userIdState, usernameState } from '../recoilState'
+import { useRecoilState } from 'recoil'
+
+const StyledNavBar: React.FC<StyledNavbarProps> = ({ brandImageSrc }) => {
+	const navigate = useNavigate()
+	const handleNavigate = (route: string) => {
+		navigate(route)
+	}
+
+	const [recoilId, setRecoilId] = useRecoilState(userIdState)
+	const [recoilName, setRecoilName] = useRecoilState(usernameState)
+
+	const handleLogout = () => {
+		setRecoilId(null)
+		setRecoilName('Guest')
+	}
+
+	return (
+		<NavbarContainer>
+			<BrandImage
+				src={brandImageSrc}
+				alt="Brand Image"
+				onClick={() => handleNavigate('/')}
+			/>
+			<NavItems>
+				{!recoilId && (
+					<NavItem onClick={() => handleNavigate('/Login')}>Login</NavItem>
+				)}
+				{recoilId && (
+					<NavItem onClick={() => handleNavigate('/Sequence')}>
+						Sequence
+					</NavItem>
+				)}
+				{recoilId && (
+					<NavItem onClick={() => handleNavigate('/Blitz')}>Blitz</NavItem>
+				)}
+				<NavItem onClick={() => handleNavigate('/About')}>About</NavItem>
+				{recoilId && <NavItem onClick={() => handleLogout()}>Logout</NavItem>}
+			</NavItems>
+		</NavbarContainer>
+	)
+}
 
 const NavbarContainer = styled.nav`
 	background: linear-gradient(to left, coral 50%, white, white);
@@ -44,33 +86,6 @@ const NavItem = styled.li`
 
 interface StyledNavbarProps {
 	brandImageSrc: string
-	navItems: string[]
-}
-
-const StyledNavBar: React.FC<StyledNavbarProps> = ({
-	brandImageSrc,
-	navItems,
-}) => {
-	const navigate = useNavigate()
-	const handleNavigate = (route: string) => {
-		navigate(route)
-	}
-	return (
-		<NavbarContainer>
-			<BrandImage
-				src={brandImageSrc}
-				alt="Brand Image"
-				onClick={() => handleNavigate('/')}
-			/>
-			<NavItems>
-				{navItems.map((item, index) => (
-					<NavItem key={index} onClick={() => handleNavigate(item)}>
-						{item}
-					</NavItem>
-				))}
-			</NavItems>
-		</NavbarContainer>
-	)
 }
 
 export default StyledNavBar

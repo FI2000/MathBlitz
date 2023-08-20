@@ -2,60 +2,46 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import '../fonts.css'
-import { useRecoilState } from 'recoil'
-import { userIdState, usernameState } from '../recoilState'
 
-async function fetchUserProfile(username: string, password: string) {
+async function registerUserProfile(
+	username: string,
+	password: string
+): Promise<number> {
+	const url = `http://localhost:8080/api/user/register?username=${username}&password=${password}`
+
 	try {
-		const response = await fetch(
-			`http://localhost:8080/api/user/profile?username=${username}&password=${password}`
-		)
-		const data = await response.json()
-		console.log(data)
-		return data
+		const response = await fetch(url, {
+			method: 'POST',
+		})
+
+		if (!response.ok) {
+			throw new Error('Network response was not ok')
+		}
+
+		return response.status
 	} catch (error) {
-		console.log(error)
+		console.error('Fetch error:', error)
+		throw error // Re-throw the error to handle it at a higher level
 	}
 }
 
-const LoginPrompt: React.FC = () => {
+const RegisterPrompt: React.FC = () => {
 	const navigate = useNavigate()
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
 
-	const [recoilId, setRecoilId] = useRecoilState(userIdState)
-	const [recoilName, setRecoilName] = useRecoilState(usernameState)
-
-	const [incorrectLogin, setIncorrectLogin] = useState(false)
-
-	const handleLogin = async () => {
-		const fetchedData = await fetchUserProfile(username, password)
-		if (fetchedData) {
-			setIncorrectLogin(false)
-			setRecoilId(fetchedData['id'])
-			setRecoilName(fetchedData['username'])
-			navigate('/')
-		} else {
-			setIncorrectLogin(true)
-			console.log(fetchedData)
+	const handleRegister = async () => {
+		const status = await registerUserProfile(username, password)
+		if (status === 200) {
+			navigate('/Login')
 		}
-	}
-
-	const handleRegister = () => {
-		navigate('/Register')
 	}
 
 	const isButtonDisabled = !username || !password
 
 	return (
 		<PromptContainer>
-			<Container>
-				<PromptText>Username</PromptText>
-				{incorrectLogin && (
-					<IncorrectLoginPrompt> Invalid </IncorrectLoginPrompt>
-				)}
-			</Container>
-
+			<PromptText>Username</PromptText>
 			<StyledInput
 				type="text"
 				placeholder="Username"
@@ -70,9 +56,8 @@ const LoginPrompt: React.FC = () => {
 				onChange={(e) => setPassword(e.target.value)}
 			/>
 			<ButtonContainer>
-				<Button onClick={handleRegister}>Register</Button>
-				<Button onClick={handleLogin} disabled={isButtonDisabled}>
-					Login
+				<Button onClick={handleRegister} disabled={isButtonDisabled}>
+					Register
 				</Button>
 			</ButtonContainer>
 		</PromptContainer>
@@ -145,4 +130,4 @@ const PromptContainer = styled.div`
 	align-items: left;
 `
 
-export default LoginPrompt
+export default RegisterPrompt

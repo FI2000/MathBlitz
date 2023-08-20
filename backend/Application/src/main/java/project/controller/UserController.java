@@ -6,12 +6,13 @@ import org.springframework.web.bind.annotation.*;
 import project.persistence.model.UserProfile;
 import project.service.UserService;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/player")
+@RequestMapping("/api/user")
 public class UserController {
-
     private final UserService service;
 
     @Autowired
@@ -20,18 +21,20 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public void registerUser(@RequestBody UserProfile userProfile) {
-        System.out.println("Here register");
-        service.registerUser(userProfile);
+    public ResponseEntity<?> registerUser(@RequestParam("username") String username, @RequestParam("password") String password) {
+        service.registerUser(username, password);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{userId}/profile")
-    public ResponseEntity<?> getUser(@PathVariable Long userId) {
-        System.out.println("Player id retrieved - " + userId);
-        Optional<UserProfile> userProfile = service.getUser(userId);
-
+    @GetMapping("/profile")
+    public ResponseEntity<?> getUser(@RequestParam("username") String username, @RequestParam("password") String password) {
+        Optional<UserProfile> userProfile = service.getUser(username, password);
         if (userProfile.isPresent()) {
-            return ResponseEntity.ok(userProfile.get());
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("id", userProfile.get().getId());
+            responseBody.put("username", userProfile.get().getUserName());
+
+            return ResponseEntity.ok(responseBody);
         } else {
             return ResponseEntity.notFound().build();
         }
