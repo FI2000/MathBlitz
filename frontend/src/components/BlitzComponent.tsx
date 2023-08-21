@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { normalDifficultyEquation } from '../service/BlitzGenerator'
 import Countdown from 'react-countdown'
@@ -24,8 +24,8 @@ const BlitzComponent: React.FC<BlitzParameters> = ({
 	operations,
 	multiplier,
 }) => {
+	console.log('in component')
 	const [recoilId, setRecoilId] = useRecoilState(userIdState)
-	console.log(recoilId)
 	const [score, setScore] = useState<number>(0)
 	const [streak, setStreak] = useState<number>(1)
 	const [lives, setLives] = useState<number>(3)
@@ -36,22 +36,27 @@ const BlitzComponent: React.FC<BlitzParameters> = ({
 	const [guessing, setGuessing] = useState(false)
 	const [startCountdown, setStartCountdown] = useState(false)
 	const [feedback, setFeedback] = useState('...')
-
-	const targetDate =
-		Date.now() + 15000 - Math.min(Math.floor(streak * 0.2) * 1000, 5000)
+	const [guessingDuration, setGuessingDuration] = useState(0)
+	const [textVisible, setTextVisible] = useState(true)
 
 	const handleCountdownComplete = () => {
 		setGuessing(false)
 		setStartCountdown(false)
 		setStreak(1)
 		setLives(lives - 1)
-		console.log('Countdown completed')
+		setTextVisible(true)
 	}
 
 	const handleRound = () => {
+		setGuessingDuration(
+			Date.now() + 15000 - Math.min(Math.floor(streak * 0.5) * 1000, 10000)
+		)
 		setGuessing(true)
 		setStartCountdown(true)
 		setFeedback('...')
+		setTimeout(() => {
+			setTextVisible(false)
+		}, Math.floor(guessingDuration * 0.66))
 
 		const round: BlitzRound = normalDifficultyEquation()
 		setEquation(round.equation)
@@ -67,11 +72,15 @@ const BlitzComponent: React.FC<BlitzParameters> = ({
 		setOptions([])
 		setAnswer(0)
 		setFeedback('...')
+		setTextVisible(true)
 	}
 
 	const handleAnswer = (chosen: number) => {
+		setTextVisible(true)
 		let timeTaken = Math.floor(
-			(15000 - Math.floor(streak * 0.1) * 1000 - (targetDate - Date.now())) /
+			(15000 -
+				Math.floor(streak * 0.1) * 1000 -
+				(guessingDuration - Date.now())) /
 				1000
 		)
 		setGuessing(false)
@@ -80,10 +89,11 @@ const BlitzComponent: React.FC<BlitzParameters> = ({
 		if (answer === chosen) {
 			setScore(Math.ceil(score + streak * 100 * multiplier - 10 * timeTaken))
 			setStreak(streak + 1)
-			if (streak % 5 == 0 && streak !== 0) {
+			if (streak % 2 == 0 && streak !== 0 && streak < 20) {
 				setFeedback('Timer shortened')
+			} else {
+				setFeedback('Nice')
 			}
-			setFeedback('Nice')
 		} else {
 			setStreak(1)
 			setLives(lives - 1)
@@ -112,7 +122,7 @@ const BlitzComponent: React.FC<BlitzParameters> = ({
 					Time remaining:{' '}
 					{startCountdown && (
 						<Countdown
-							date={targetDate}
+							date={guessingDuration}
 							renderer={renderSeconds}
 							onComplete={handleCountdownComplete}
 						/>
@@ -125,16 +135,35 @@ const BlitzComponent: React.FC<BlitzParameters> = ({
 					<p>{equation}</p>
 				</EquationContainer>
 				<ButtonGroupContainer>
-					{options.map((item, index) => (
-						<Button
-							key={index}
-							onClick={() => handleAnswer(item)}
-							disabled={!guessing}
-						>
-							{' '}
-							{item}
-						</Button>
-					))}
+					{options.map((item, index) =>
+						mod === 'Peek-A-Boo' ? (
+							<PeekABooButton
+								key={index}
+								onClick={() => handleAnswer(item)}
+								disabled={!guessing}
+							>
+								{' '}
+								{item}
+							</PeekABooButton>
+						) : mod === 'Memory' ? (
+							<Button
+								key={index}
+								onClick={() => handleAnswer(item)}
+								disabled={!guessing}
+							>
+								{textVisible ? item : '?'}
+							</Button>
+						) : (
+							<Button
+								key={index}
+								onClick={() => handleAnswer(item)}
+								disabled={!guessing}
+							>
+								{' '}
+								{item}
+							</Button>
+						)
+					)}
 				</ButtonGroupContainer>
 			</BlitzGameContainer>
 			<FooterContainer>
@@ -249,6 +278,59 @@ const Button = styled.button`
             }
         `}
 `
+
+const PeekABooButton = styled.button`
+	background-color: white;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	margin-top: 0px;
+	border-radius: 5px;
+	cursor: pointer;
+	font-family: 'PixelFont', cursive;
+	font-size: 32px;
+
+	${({ disabled }) =>
+		disabled
+			? `
+            color: grey;
+            opacity: 0.6;
+            cursor: not-allowed;
+        `
+			: `
+            transition: background-color 0.3s ease-in-out;
+            &:hover {
+                background-color: black;
+            }
+        `}
+`
+
+const MemoryButton = styled.button`
+	background-color: white;
+	color: coral;
+	border: none;
+	padding: 10px 20px;
+	margin-top: 0px;
+	border-radius: 5px;
+	cursor: pointer;
+	font-family: 'PixelFont', cursive;
+	font-size: 32px;
+
+	${({ disabled }) =>
+		disabled
+			? `
+          color: green;
+          opacity: 0.6;
+          cursor: not-allowed;
+      `
+			: `
+          transition: background-color 0.3s ease-in-out;
+          &:hover {
+              background-color: black;
+          }
+      `}
+`
+
 const StartButton = styled.button`
 	background-color: white;
 	color: coral;
