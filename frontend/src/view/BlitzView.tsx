@@ -7,6 +7,7 @@ interface BlitzParameters {
 	mod: string | null
 	difficulty: string | null
 	operations: string | null
+	multiplier: number
 }
 
 const BlitzView: React.FC = () => {
@@ -21,6 +22,7 @@ const BlitzView: React.FC = () => {
 					mod={parameters.mod}
 					difficulty={parameters.difficulty}
 					operations={parameters.operations}
+					multiplier={parameters.multiplier}
 				/>
 			</Container>
 		</>

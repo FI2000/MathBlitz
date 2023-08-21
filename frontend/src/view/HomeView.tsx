@@ -8,6 +8,7 @@ interface BlitzParameters {
 	mod: string | null
 	difficulty: string | null
 	operations: string | null
+	multiplier: number
 }
 
 const HomeView: React.FC = () => {
@@ -17,12 +18,18 @@ const HomeView: React.FC = () => {
 	const [mod, setMod] = useState<string | null>(null)
 	const [difficulty, setDifficulty] = useState<string | null>(null)
 	const [operations, setOperation] = useState<string | null>(null)
+	var multiplier =
+		1.0 *
+		calculateMultiplier(mod) *
+		calculateMultiplier(difficulty) *
+		calculateMultiplier(operations)
 
 	const handleNavigation = () => {
 		const data: BlitzParameters = {
 			mod: mod,
 			difficulty: difficulty,
 			operations: operations,
+			multiplier: multiplier,
 		}
 		navigate('/Blitz', { state: data })
 	}
@@ -134,6 +141,7 @@ const HomeView: React.FC = () => {
 							</Button>
 						</ButtonGroupContainer>
 					</ParameterContainer>
+					<ScoreMultiplier>x({multiplier.toFixed(3)}) </ScoreMultiplier>
 					<StartButton disabled={!cannotStart} onClick={handleNavigation}>
 						Start
 					</StartButton>
@@ -148,6 +156,13 @@ const ButtonGroupContainer = styled.div`
 	gap: 0px;
 	justify-content: center;
 	margin-top: 1rem;
+`
+const ScoreMultiplier = styled.div`
+	font-family: 'PixelFont', cursive;
+	font-weight: bold;
+	font-size: 12px;
+	text-align: center;
+	margin-bottom: 10px;
 `
 
 const StartButton = styled.button`
@@ -250,5 +265,30 @@ const Modes = styled.div`
 	width: 400px;
 	flex-direction: column;
 `
+const calculateMultiplier = (parameter: string | null): number => {
+	if (parameter === null) {
+		return 1.0
+	}
+	switch (parameter) {
+		case 'None':
+			return 1.0
+		case 'Memory':
+			return 1.1
+		case 'Peek-A-Boo':
+			return 1.1
+		case 'Normal':
+			return 1.0
+		case 'Hard':
+			return 1.2
+		case 'Extreme':
+			return 1.3
+		case 'Basic':
+			return 1.0
+		case 'Advanced':
+			return 1.2
+		default:
+			return 1.0
+	}
+}
 
 export default HomeView

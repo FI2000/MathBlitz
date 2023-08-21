@@ -102,7 +102,7 @@ const IncorrectLoginPrompt = styled.div`
 	font-weight: bold;
 	font-size: 10px;
 	align-self: flex-end;
-	color: red;
+	color: black;
 `
 
 const Button = styled.button`
