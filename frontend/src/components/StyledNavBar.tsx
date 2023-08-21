@@ -30,14 +30,7 @@ const StyledNavBar: React.FC<StyledNavbarProps> = ({ brandImageSrc }) => {
 				{!recoilId && (
 					<NavItem onClick={() => handleNavigate('/Login')}>Login</NavItem>
 				)}
-				{recoilId && (
-					<NavItem onClick={() => handleNavigate('/Sequence')}>
-						Sequence
-					</NavItem>
-				)}
-				{recoilId && (
-					<NavItem onClick={() => handleNavigate('/Blitz')}>Blitz</NavItem>
-				)}
+				<NavItem onClick={() => handleNavigate('/Setup')}>Blitz</NavItem>
 				<NavItem onClick={() => handleNavigate('/About')}>About</NavItem>
 				{recoilId && <NavItem onClick={() => handleLogout()}>Logout</NavItem>}
 			</NavItems>

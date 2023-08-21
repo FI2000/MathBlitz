@@ -23,11 +23,25 @@ export function normalDifficultyEquation(): BlitzRound {
 	}
 
 	const range = Math.floor(answer * 0.04)
-	const closeValues = [answer - range, answer, answer + range]
+	const closeValues = [
+		Math.ceil(answer - range * 0.8),
+		answer,
+		Math.floor(answer + range * 1.2),
+		Math.floor(answer + range * 1.4),
+	]
 
 	return {
 		equation: equation,
-		options: closeValues.sort(() => Math.random() - 0.5),
+		options: shuffleArray(closeValues),
 		answer: answer,
 	}
+}
+
+function shuffleArray<T>(array: T[]): T[] {
+	const newArray = [...array]
+	for (let i = newArray.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1))
+		;[newArray[i], newArray[j]] = [newArray[j], newArray[i]] // Swap elements
+	}
+	return newArray
 }

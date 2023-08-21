@@ -7,8 +7,9 @@ import RegisterView from './view/RegisterView'
 import AboutView from './view/AboutView'
 import { userIdState, usernameState } from './recoilState'
 import { useRecoilState } from 'recoil'
-import HomeView from './view/HomeView'
+import SetupView from './view/SetupView'
 import BlitzView from './view/BlitzView'
+import Homeview from './view/HomeView'
 
 function App() {
 	const [recoilId, setRecoilId] = useRecoilState(userIdState)
@@ -18,7 +19,8 @@ function App() {
 		<BrowserRouter>
 			<StyledNavBar brandImageSrc={logoImage} />
 			<Routes>
-				<Route path="/" element={<HomeView />} />
+				<Route path="/" element={<Homeview />} />
+				<Route path="/Setup" element={<SetupView />} />
 				{!recoilId ? (
 					<Route path="/Login" element={<LoginView />} />
 				) : (
