@@ -4,19 +4,7 @@ import styled from 'styled-components'
 import '../fonts.css'
 import { useRecoilState } from 'recoil'
 import { userIdState, usernameState } from '../recoilState'
-
-async function fetchUserProfile(username: string, password: string) {
-	try {
-		const response = await fetch(
-			`http://localhost:8080/api/user/profile?username=${username}&password=${password}`
-		)
-		const data = await response.json()
-		console.log(data)
-		return data
-	} catch (error) {
-		console.log(error)
-	}
-}
+import { fetchUserProfile } from '../service/APICalls'
 
 const LoginPrompt: React.FC = () => {
 	const navigate = useNavigate()

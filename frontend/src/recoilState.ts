@@ -5,7 +5,7 @@ export const usernameState = atom<string | null>({
 	default: 'Guest',
 })
 
-export const userIdState = atom<string | null>({
+export const userIdState = atom<number | null>({
 	key: 'userIdState',
 	default: null,
 })

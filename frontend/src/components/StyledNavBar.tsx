@@ -30,6 +30,7 @@ const StyledNavBar: React.FC<StyledNavbarProps> = ({ brandImageSrc }) => {
 				{!recoilId && (
 					<NavItem onClick={() => handleNavigate('/Login')}>Login</NavItem>
 				)}
+				{recoilId && <NavName>{recoilName}</NavName>}
 				<NavItem onClick={() => handleNavigate('/Setup')}>Blitz</NavItem>
 				<NavItem onClick={() => handleNavigate('/About')}>About</NavItem>
 				{recoilId && <NavItem onClick={() => handleLogout()}>Logout</NavItem>}
@@ -48,10 +49,6 @@ const NavbarContainer = styled.nav`
 	align-items: center;
 `
 
-const NavBrand = styled.div`
-	font-size: 1.5rem;
-	font-weight: bold;
-`
 const BrandImage = styled.img`
 	width: 24rem;
 	height: 5rem;
@@ -75,6 +72,13 @@ const NavItem = styled.li`
 	&:hover {
 		color: black;
 	}
+`
+
+const NavName = styled.li`
+	font-family: 'PixelFont', cursive;
+	font-weight: bold;
+	font-size: 18px;
+	color: black;
 `
 
 interface StyledNavbarProps {

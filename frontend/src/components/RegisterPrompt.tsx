@@ -2,28 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import '../fonts.css'
-
-async function registerUserProfile(
-	username: string,
-	password: string
-): Promise<number> {
-	const url = `http://localhost:8080/api/user/register?username=${username}&password=${password}`
-
-	try {
-		const response = await fetch(url, {
-			method: 'POST',
-		})
-
-		if (!response.ok) {
-			throw new Error('Network response was not ok')
-		}
-
-		return response.status
-	} catch (error) {
-		console.error('Fetch error:', error)
-		throw error // Re-throw the error to handle it at a higher level
-	}
-}
+import { registerUserProfile } from '../service/APICalls'
 
 const RegisterPrompt: React.FC = () => {
 	const navigate = useNavigate()

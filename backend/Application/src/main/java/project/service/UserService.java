@@ -32,6 +32,10 @@ public class UserService {
         return Optional.empty();
     }
 
+    public void sumUserScore(Integer totalScore, Long userId) {
+        userRepository.sumUserScore(totalScore, userId);
+    }
+
     private boolean isValidLogin(String hashedPassword, String plainPassword) {
         if (!Objects.isNull(plainPassword)) {
             return encoder.matches(plainPassword, hashedPassword);

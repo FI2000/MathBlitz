@@ -12,7 +12,7 @@ interface BlitzParameters {
 }
 
 const SetupView: React.FC = () => {
-	const [recoilName, setRecoilName] = useRecoilState(usernameState)
+	const [recoilName] = useRecoilState(usernameState)
 	const navigate = useNavigate()
 
 	const [mod, setMod] = useState<string | null>(null)
@@ -52,7 +52,7 @@ const SetupView: React.FC = () => {
 							<Button
 								onClick={() => setMod('None')}
 								style={
-									mod == 'None'
+									mod === 'None'
 										? { backgroundColor: ' black' }
 										: { backgroundColor: ' white' }
 								}
@@ -62,7 +62,7 @@ const SetupView: React.FC = () => {
 							<Button
 								onClick={() => setMod('Memory')}
 								style={
-									mod == 'Memory'
+									mod === 'Memory'
 										? { backgroundColor: ' black' }
 										: { backgroundColor: ' white' }
 								}
@@ -70,9 +70,9 @@ const SetupView: React.FC = () => {
 								Memory
 							</Button>
 							<Button
-								onClick={() => setMod('Peek-A-Boo')}
+								onClick={() => setMod('PeekABoo')}
 								style={
-									mod == 'Peek-A-Boo'
+									mod === 'PeekABoo'
 										? { backgroundColor: ' black' }
 										: { backgroundColor: ' white' }
 								}
@@ -87,7 +87,7 @@ const SetupView: React.FC = () => {
 							<Button
 								onClick={() => setDifficulty('Normal')}
 								style={
-									difficulty == 'Normal'
+									difficulty === 'Normal'
 										? { backgroundColor: ' black' }
 										: { backgroundColor: ' white' }
 								}
@@ -97,7 +97,7 @@ const SetupView: React.FC = () => {
 							<Button
 								onClick={() => setDifficulty('Hard')}
 								style={
-									difficulty == 'Hard'
+									difficulty === 'Hard'
 										? { backgroundColor: ' black' }
 										: { backgroundColor: ' white' }
 								}
@@ -107,7 +107,7 @@ const SetupView: React.FC = () => {
 							<Button
 								onClick={() => setDifficulty('Extreme')}
 								style={
-									difficulty == 'Extreme'
+									difficulty === 'Extreme'
 										? { backgroundColor: ' black' }
 										: { backgroundColor: ' white' }
 								}
@@ -122,7 +122,7 @@ const SetupView: React.FC = () => {
 							<Button
 								onClick={() => setOperation('Basic')}
 								style={
-									operations == 'Basic'
+									operations === 'Basic'
 										? { backgroundColor: ' black' }
 										: { backgroundColor: ' white' }
 								}
@@ -132,7 +132,7 @@ const SetupView: React.FC = () => {
 							<Button
 								onClick={() => setOperation('Advanced')}
 								style={
-									operations == 'Advanced'
+									operations === 'Advanced'
 										? { backgroundColor: ' black' }
 										: { backgroundColor: ' white' }
 								}

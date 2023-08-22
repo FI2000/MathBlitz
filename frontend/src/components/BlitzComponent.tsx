@@ -3,9 +3,10 @@ import styled from 'styled-components'
 import { normalDifficultyEquation } from '../service/BlitzGenerator'
 import Countdown from 'react-countdown'
 import { useRecoilState } from 'recoil'
-import { userIdState } from '../recoilState'
+import { userIdState, usernameState } from '../recoilState'
 import { playCorrect } from '../service/AudioSounds'
 import { playWrong } from '../service/AudioSounds'
+import { submitUserScore } from '../service/APICalls'
 
 interface BlitzParameters {
 	mod: string | null
@@ -20,6 +21,14 @@ interface BlitzRound {
 	answer: number
 }
 
+interface BlitzScore {
+	scoreStreak: number
+	scorePoints: number
+	scoreMod: string | null
+	userId: number | null
+	username: string | null
+}
+
 const BlitzComponent: React.FC<BlitzParameters> = ({
 	mod,
 	difficulty,
@@ -27,6 +36,8 @@ const BlitzComponent: React.FC<BlitzParameters> = ({
 	multiplier,
 }) => {
 	const [recoilId, setRecoilId] = useRecoilState(userIdState)
+	const [recoilName, setRecoilName] = useRecoilState(usernameState)
+
 	const [score, setScore] = useState<number>(0)
 	const [streak, setStreak] = useState<number>(1)
 	const [maxStreak, setMaxStreak] = useState<number>(1)
@@ -54,7 +65,6 @@ const BlitzComponent: React.FC<BlitzParameters> = ({
 			setTextVisible(false)
 		}, Math.floor(guessingDuration * 0.33) * 1000)
 
-		console.log(Math.floor(guessingDuration * 0.66) * 1000)
 		setGuessingDuration(
 			Date.now() + 15000 - Math.min(Math.floor(streak * 0.5) * 1000, 10000)
 		)
@@ -71,6 +81,7 @@ const BlitzComponent: React.FC<BlitzParameters> = ({
 	const handleReset = () => {
 		setScore(0)
 		setStreak(1)
+		setMaxStreak(1)
 		setLives(3)
 		setEquation('')
 		setOptions([])
@@ -81,7 +92,6 @@ const BlitzComponent: React.FC<BlitzParameters> = ({
 
 	const handleAnswer = (chosen: number) => {
 		setTextVisible(true)
-		setMaxStreak(Math.max(maxStreak, streak))
 		let timeTaken = Math.floor(
 			(15000 -
 				Math.floor(streak * 0.1) * 1000 -
@@ -94,6 +104,7 @@ const BlitzComponent: React.FC<BlitzParameters> = ({
 		if (answer === chosen) {
 			playCorrect()
 			setScore(Math.ceil(score + streak * 100 * multiplier - 10 * timeTaken))
+			setMaxStreak(Math.max(maxStreak, streak + 1))
 			setStreak(streak + 1)
 			if (streak % 2 == 0 && streak !== 0 && streak < 20) {
 				setFeedback('Timer shortened')
@@ -109,7 +120,15 @@ const BlitzComponent: React.FC<BlitzParameters> = ({
 	}
 
 	const handleSubmit = () => {
-		console.log('submitted')
+		const submittedScore: BlitzScore = {
+			scoreStreak: maxStreak,
+			scorePoints: score,
+			scoreMod: mod,
+			userId: recoilId,
+			username: recoilName,
+		}
+		submitUserScore(submittedScore)
+		handleReset()
 	}
 
 	const renderSeconds = ({ seconds }: any) => {
@@ -146,7 +165,7 @@ const BlitzComponent: React.FC<BlitzParameters> = ({
 				</EquationContainer>
 				<ButtonGroupContainer>
 					{options.map((item, index) =>
-						mod === 'Peek-A-Boo' ? (
+						mod === 'PeekABoo' ? (
 							<PeekABooButton
 								key={index}
 								onClick={() => handleAnswer(item)}
@@ -312,7 +331,7 @@ const PeekABooButton = styled.button`
             &:hover {
                 background-color: black;
             }
-        `}
+        `};
 `
 
 const MemoryButton = styled.button`

@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 public class UserProfile {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "randomLongIdGenerator")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
     private Long id;
 
@@ -33,6 +33,7 @@ public class UserProfile {
     @OneToMany
     @JoinColumn(name = "score_user_id", referencedColumnName = "user_id")
     private List<Score> userScores;
+
 
     @Builder
     public UserProfile() {
