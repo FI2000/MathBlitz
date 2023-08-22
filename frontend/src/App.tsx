@@ -14,7 +14,6 @@ import Homeview from './view/HomeView'
 function App() {
 	const [recoilId, setRecoilId] = useRecoilState(userIdState)
 	const [recoilName, setRecoilName] = useRecoilState(usernameState)
-
 	return (
 		<BrowserRouter>
 			<StyledNavBar brandImageSrc={logoImage} />

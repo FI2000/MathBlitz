@@ -17,6 +17,7 @@ const StyledNavBar: React.FC<StyledNavbarProps> = ({ brandImageSrc }) => {
 	const handleLogout = () => {
 		setRecoilId(null)
 		setRecoilName('Guest')
+		localStorage.clear()
 	}
 
 	return (
@@ -27,10 +28,10 @@ const StyledNavBar: React.FC<StyledNavbarProps> = ({ brandImageSrc }) => {
 				onClick={() => handleNavigate('/')}
 			/>
 			<NavItems>
+				<NavName>{recoilName ? recoilName : 'Guest'}</NavName>
 				{!recoilId && (
 					<NavItem onClick={() => handleNavigate('/Login')}>Login</NavItem>
 				)}
-				{recoilId && <NavName>{recoilName}</NavName>}
 				<NavItem onClick={() => handleNavigate('/Setup')}>Blitz</NavItem>
 				<NavItem onClick={() => handleNavigate('/About')}>About</NavItem>
 				{recoilId && <NavItem onClick={() => handleLogout()}>Logout</NavItem>}

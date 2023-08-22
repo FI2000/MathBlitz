@@ -38,9 +38,6 @@ const SetupView: React.FC = () => {
 
 	return (
 		<>
-			<Container>
-				<PromptText>Logged in as {recoilName}</PromptText>
-			</Container>
 			<CC>
 				<Modes>
 					<TitleMode>

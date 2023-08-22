@@ -1,7 +1,7 @@
 export async function registerUserProfile(
 	username: string,
 	password: string
-): Promise<number> {
+): Promise<number | undefined> {
 	const url = `http://localhost:8080/api/user/register?username=${username}&password=${password}`
 
 	try {
@@ -15,8 +15,7 @@ export async function registerUserProfile(
 
 		return response.status
 	} catch (error) {
-		console.error('Fetch error:', error)
-		throw error // Re-throw the error to handle it at a higher level
+		alert(error)
 	}
 }
 
@@ -28,7 +27,7 @@ export async function fetchUserProfile(username: string, password: string) {
 		const data = await response.json()
 		return data
 	} catch (error) {
-		console.log(error)
+		alert(error)
 	}
 }
 

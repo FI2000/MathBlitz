@@ -22,6 +22,8 @@ const LoginPrompt: React.FC = () => {
 			setIncorrectLogin(false)
 			setRecoilId(fetchedData['id'])
 			setRecoilName(fetchedData['username'])
+			localStorage.setItem('id', JSON.stringify(fetchedData['id']))
+			localStorage.setItem('username', JSON.stringify(fetchedData['username']))
 			navigate('/')
 		} else {
 			setIncorrectLogin(true)
