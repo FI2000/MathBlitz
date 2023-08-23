@@ -1,19 +1,18 @@
 package project.service;
 
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import project.persistence.model.TotalScoreBody;
 import project.persistence.model.UserProfile;
 import project.persistence.repository.UserRepository;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -51,6 +50,33 @@ public class UserService {
 
     public void sumUserScore(Integer totalScore, Long userId) {
         userRepository.sumUserScore(totalScore, userId);
+    }
+
+    public ResponseEntity<?> getTopTotalScores() {
+        try {
+            List<TotalScoreBody> requestBody = new ArrayList<>();
+            for (UserProfile userProfile : userRepository.findTop25UsersOrderByTotalScoreDesc()) {
+                requestBody.add(TotalScoreBody.builder().userName(userProfile.getUserName()).totalScore(userProfile.getTotalScore()).build());
+            }
+            return ResponseEntity.ok(requestBody);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    public ResponseEntity<?> getUserTotalScores(Long id) {
+        try {
+            Optional<UserProfile> userProfile = userRepository.findById(id);
+            if (userProfile.isPresent()) {
+                return ResponseEntity.ok(TotalScoreBody.builder().userName(userProfile.get().getUserName()).totalScore(userProfile.get().getTotalScore()).build());
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     private boolean isValidLogin(String hashedPassword, String plainPassword) {

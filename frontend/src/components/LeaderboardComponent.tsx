@@ -1,9 +1,21 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import {
+	getTopTotalScore,
+	getUserTotalScore,
+	getUserLocalScores,
+} from '../service/APICalls'
+import { useRecoilState } from 'recoil'
+import { userIdState, usernameState } from '../recoilState'
 
 interface TabsProps {
 	activeTab: number
 	handleTabClick: (tabIndex: number) => void
+}
+
+interface totalScore {
+	userName: string
+	totalScore: number
 }
 
 interface BlitzScore {
@@ -11,6 +23,7 @@ interface BlitzScore {
 	scorePoints: number
 	scoreMod: string
 	username: string
+	creationDate: string
 }
 
 const Tabs: React.FC<TabsProps> = ({ activeTab, handleTabClick }) => {
@@ -34,37 +47,99 @@ const Tabs: React.FC<TabsProps> = ({ activeTab, handleTabClick }) => {
 
 const LeaderboardsTable: React.FC = () => {
 	const [activeTab, setActiveTab] = useState(0)
+	const [scoreList, setScoreList] = useState<totalScore[]>([])
+	const [userTotalScore, setUserTotalScore] = useState<totalScore>({
+		userName: 'Guest',
+		totalScore: 0,
+	})
+	const [userLocalScores, setUserLocalScores] = useState<BlitzScore[]>([])
 
-	const handleTabClick = (tabIndex: number) => {
+	const [recoilId] = useRecoilState(userIdState)
+	const [recoilName] = useRecoilState(usernameState)
+
+	const handleTabClick = async (tabIndex: number) => {
 		setActiveTab(tabIndex)
+
+		if (tabIndex === 0) {
+			if (recoilName !== 'Guest') {
+				const userData = await getUserLocalScores(recoilId)
+				setUserLocalScores(userData)
+			}
+		}
+
+		if (tabIndex === 3) {
+			setScoreList(await getTopTotalScore())
+			if (recoilName !== 'Guest') {
+				const userData = await getUserTotalScore(recoilId)
+				setUserTotalScore(userData)
+			}
+		}
 	}
 
 	return (
-		<TableContainer>
-			<Tabs activeTab={activeTab} handleTabClick={handleTabClick} />
-			<Divider />
-			{activeTab === 0 && (
-				<ScoreTab>
-					<RankingTabContainer>#50</RankingTabContainer>
-					<ScoreTabContainerLeft>
-						<ScoreTabName>PlayerName</ScoreTabName>
+		<>
+			<TableContainer>
+				<Tabs activeTab={activeTab} handleTabClick={handleTabClick} />
+				<Divider />
+				{activeTab === 0 && (
+					<>
+						{userLocalScores.map((value: BlitzScore, index: number) => {
+							return (
+								<ScoreTab>
+									<RankingTabContainer>#{index + 1}</RankingTabContainer>
+									<ScoreTabContainerLeft>
+										<ScoreTabName>{value.username}</ScoreTabName>
+										<ScoreTabName>
+											{value.scorePoints}
+											<SmallerText>pts</SmallerText>(
+											<SmallerCombo>x</SmallerCombo>
+											{value.scoreStreak})
+										</ScoreTabName>
+									</ScoreTabContainerLeft>
+									<ScoreTabContainerRight>
+										<ScoreTabMods>{value.scoreMod}</ScoreTabMods>
+										<ScoreTabDate>{value.creationDate}</ScoreTabDate>
+									</ScoreTabContainerRight>
+								</ScoreTab>
+							)
+						})}
+					</>
+				)}
+				<Divider />
+				{activeTab === 1 && <ScoreTab>Tab 2 Content</ScoreTab>}
+				{activeTab === 2 && <ScoreTab>Tab 3 Content</ScoreTab>}
+				{activeTab === 3 && (
+					<>
+						{scoreList.map((value: totalScore, index: number) => {
+							return (
+								<TotalScoreTab>
+									<RankingTabContainer>#{index + 1}</RankingTabContainer>
+									<TotalScoreTabContainer>
+										<ScoreTabName>{value.userName}</ScoreTabName>
+										<ScoreTabName>
+											{value.totalScore}
+											<SmallerText>pts</SmallerText>
+										</ScoreTabName>
+									</TotalScoreTabContainer>
+								</TotalScoreTab>
+							)
+						})}
+					</>
+				)}
+			</TableContainer>
+			{activeTab === 3 && (
+				<UserScoreTab>
+					<RankingTabContainer>#</RankingTabContainer>
+					<TotalScoreTabContainer>
+						<ScoreTabName>{userTotalScore.userName}</ScoreTabName>
 						<ScoreTabName>
-							1543673<SmallerText>pts</SmallerText>(
-							<SmallerCombo>x</SmallerCombo>
-							32)
+							{userTotalScore.totalScore}
+							<SmallerText>pts</SmallerText>
 						</ScoreTabName>
-					</ScoreTabContainerLeft>
-					<ScoreTabContainerRight>
-						<ScoreTabMods>PKB</ScoreTabMods>
-						<ScoreTabDate>2021-01-11</ScoreTabDate>
-					</ScoreTabContainerRight>
-				</ScoreTab>
+					</TotalScoreTabContainer>
+				</UserScoreTab>
 			)}
-			<Divider />
-			{activeTab === 1 && <ScoreTab>Tab 2 Content</ScoreTab>}
-			{activeTab === 2 && <ScoreTab>Tab 3 Content</ScoreTab>}
-			{activeTab === 3 && <ScoreTab>Tab 4 Content</ScoreTab>}
-		</TableContainer>
+		</>
 	)
 }
 
@@ -75,8 +150,9 @@ const TabsContainer = styled.div`
 
 const ScoreTab = styled.div`
 	display: flex;
-	height: 3.4rem;
+	height: 3.1rem;
 	color: black;
+	border-bottom: 1px solid grey;
 	justify-content: space-between;
 `
 const ScoreTabContainerLeft = styled.div`
@@ -86,13 +162,42 @@ const ScoreTabContainerLeft = styled.div`
 	justify-content: space-between;
 `
 
+const TotalScoreTab = styled.div`
+	display: flex;
+	height: 3rem;
+	color: black;
+	border-bottom: 1px solid grey;
+	opacity: 0.9;
+
+	background-color: white;
+
+	&:hover {
+		background-color: lightgrey;
+	}
+`
+
+const UserScoreTab = styled.div`
+	display: flex;
+	height: 3rem;
+	color: coral;
+	border-bottom: 1px solid grey;
+	opacity: 0.9;
+
+	background-color: black;
+`
+
+const TotalScoreTabContainer = styled.div`
+	display: flex;
+	justify-content: flex-start;
+	flex-direction: column;
+`
+
 const RankingTabContainer = styled.div`
 	display: flex;
 	width: 15%;
 	justify-content: center;
 	align-items: center;
 	font-size: 20px;
-	border-right: 2px solid black;
 `
 
 const SmallerText = styled.span`
@@ -110,7 +215,7 @@ const ScoreTabContainerRight = styled.div`
 	display: flex;
 	justify-content: flex-end;
 	align-items: flex-end;
-	width: 25%;
+	width: 30%;
 	flex-direction: column;
 	justify-content: space-between;
 `
@@ -125,7 +230,7 @@ const ScoreTabDate = styled.div`
 `
 
 const ScoreTabMods = styled.div`
-	font-size: 18px;
+	font-size: 15px;
 	padding-left: 4px;
 `
 
@@ -163,6 +268,26 @@ const Tooltip = styled.span`
 	white-space: nowrap;
 `
 
-const TableContainer = styled.div``
+const TableContainer = styled.div`
+	max-height: 528.1px;
+	overflow-y: auto; /* Enable vertical scrolling when content exceeds container height */
+	overflow-x: hidden;
+
+	/* Hide the original scrollbar */
+	&::-webkit-scrollbar {
+		width: 0;
+		height: 0;
+	}
+
+	/* Styling the scrollbar thumb */
+	&::-webkit-scrollbar-thumb {
+		background-color: #888; /* thumb color */
+	}
+
+	/* Styling the scrollbar track */
+	&::-webkit-scrollbar-track {
+		background-color: #f0f0f0; /* track color */
+	}
+`
 
 export default LeaderboardsTable

@@ -11,7 +11,7 @@ const RegisterPrompt: React.FC = () => {
 	const [incorrectUsername, setIncorrectUsername] = useState(false)
 
 	const handleRegister = async () => {
-		if (username.length >= 8 && username.length <= 16) {
+		if (username.length >= 3 && username.length <= 12) {
 			const status = await registerUserProfile(username, password)
 			if (status === 200) {
 				navigate('/Login')
@@ -35,7 +35,7 @@ const RegisterPrompt: React.FC = () => {
 			</Container>
 			<StyledInput
 				type="text"
-				placeholder="Username (8-16 characters)"
+				placeholder="Username (3-12 characters)"
 				value={username}
 				onChange={(e) => setUsername(e.target.value)}
 			/>

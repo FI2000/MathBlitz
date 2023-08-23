@@ -37,6 +37,17 @@ public class ScoreService {
         return ResponseEntity.ok().build();
     }
 
+    public ResponseEntity<?> getTopLocalUserScores(Long id) {
+        try {
+            return ResponseEntity.ok(scoreRepository.findTop25UserScoresOrderByScoreDesc(id));
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+    }
+
     private void saveScoreAndSumUserScore(Score userScore, Long userId) {
         scoreRepository.save(userScore);
         Integer totalUserScore = scoreRepository.getTotalUserScore(userId);

@@ -39,4 +39,15 @@ public class UserController {
         }
     }
 
+    @GetMapping("/top")
+    public ResponseEntity<?> getTopUsers() {
+        System.out.println("here");
+        return service.getTopTotalScores();
+    }
+
+    @GetMapping("/total")
+    public ResponseEntity<?> getUserTotalScore(@RequestParam("userId") Integer userId) {
+        return service.getUserTotalScores(userId.longValue());
+    }
+
 }

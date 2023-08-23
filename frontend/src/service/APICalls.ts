@@ -61,6 +61,40 @@ export async function submitUserScore(
 	}
 }
 
+export async function getTopTotalScore() {
+	try {
+		const response = await fetch(`http://localhost:8080/api/user/top`)
+		const data = await response.json()
+		return data
+	} catch (error) {
+		alert(error)
+	}
+}
+
+export async function getUserLocalScores(userId: number | null) {
+	try {
+		const response = await fetch(
+			`http://localhost:8080/api/score/local?userId=${userId}`
+		)
+		const data = await response.json()
+		return data
+	} catch (error) {
+		alert(error)
+	}
+}
+
+export async function getUserTotalScore(userId: number | null) {
+	try {
+		const response = await fetch(
+			`http://localhost:8080/api/user/total?userId=${userId}`
+		)
+		const data = await response.json()
+		return data
+	} catch (error) {
+		alert(error)
+	}
+}
+
 interface BlitzScore {
 	scoreStreak: number
 	scorePoints: number
