@@ -47,7 +47,11 @@ const LeaderboardsTable: React.FC = () => {
 				<ScoreTab>
 					<ScoreTabContainerLeft>
 						<ScoreTabName>PlayerName</ScoreTabName>
-						<ScoreTabName>1543673(x32)</ScoreTabName>
+						<ScoreTabName>
+							1543673<SmallerText>pts</SmallerText>(
+							<SmallerCombo>x</SmallerCombo>
+							32)
+						</ScoreTabName>
 					</ScoreTabContainerLeft>
 					<ScoreTabContainerRight>
 						<ScoreTabMods>PKB</ScoreTabMods>
@@ -81,6 +85,17 @@ const ScoreTabContainerLeft = styled.div`
 	width: 75%;
 	flex-direction: column;
 	justify-content: space-between;
+`
+
+const SmallerText = styled.span`
+	font-size: 9px;
+	color: grey;
+	margin-left: 3px;
+`
+
+const SmallerCombo = styled.span`
+	font-size: 12px;
+	margin-left: 3px;
 `
 
 const ScoreTabContainerRight = styled.div`
