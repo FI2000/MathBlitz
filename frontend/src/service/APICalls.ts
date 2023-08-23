@@ -15,7 +15,11 @@ export async function registerUserProfile(
 
 		return response.status
 	} catch (error) {
-		alert(error)
+		if (String(error) === 'TypeError: Failed to fetch') {
+			alert('Failed to connect to server')
+		} else {
+			alert(error)
+		}
 	}
 }
 

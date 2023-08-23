@@ -251,10 +251,13 @@ const CC = styled.div`
 	justify-content: center;
 	display: flex;
 
-	max-width: 900px;
+	max-width: 600px;
 	margin-top: 1rem;
-	margin-left: 24.9%;
+	margin-left: 32.2%;
 	height: 70vh;
+	border: 3px solid;
+	border-image: linear-gradient(to bottom, #ccc, transparent);
+	border-image-slice: 1;
 `
 
 const Modes = styled.div`

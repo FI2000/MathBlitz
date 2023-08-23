@@ -243,10 +243,10 @@ const LeaderboardsContainer = styled.div`
 	font-family: 'PixelFont', cursive;
 	font-weight: bold;
 	font-size: 13px;
-	border: 1px solid;
+	border: 2px solid black;
 	margin-left: 40px;
 	margin-right: 10px;
-	border-image: linear-gradient(to bottom, #ccc, transparent);
+	border-image: linear-gradient(to bottom, black, transparent);
 	border-image-slice: 1;
 `
 

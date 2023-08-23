@@ -45,6 +45,7 @@ const LeaderboardsTable: React.FC = () => {
 			<Divider />
 			{activeTab === 0 && (
 				<ScoreTab>
+					<RankingTabContainer>#50</RankingTabContainer>
 					<ScoreTabContainerLeft>
 						<ScoreTabName>PlayerName</ScoreTabName>
 						<ScoreTabName>
@@ -59,7 +60,7 @@ const LeaderboardsTable: React.FC = () => {
 					</ScoreTabContainerRight>
 				</ScoreTab>
 			)}
-
+			<Divider />
 			{activeTab === 1 && <ScoreTab>Tab 2 Content</ScoreTab>}
 			{activeTab === 2 && <ScoreTab>Tab 3 Content</ScoreTab>}
 			{activeTab === 3 && <ScoreTab>Tab 4 Content</ScoreTab>}
@@ -74,17 +75,24 @@ const TabsContainer = styled.div`
 
 const ScoreTab = styled.div`
 	display: flex;
-	border: 1px solid #ccc;
 	height: 3.4rem;
 	color: black;
 	justify-content: space-between;
 `
 const ScoreTabContainerLeft = styled.div`
 	display: flex;
-	border: 1px solid black;
-	width: 75%;
+	width: 60%;
 	flex-direction: column;
 	justify-content: space-between;
+`
+
+const RankingTabContainer = styled.div`
+	display: flex;
+	width: 15%;
+	justify-content: center;
+	align-items: center;
+	font-size: 20px;
+	border-right: 2px solid black;
 `
 
 const SmallerText = styled.span`
@@ -102,7 +110,6 @@ const ScoreTabContainerRight = styled.div`
 	display: flex;
 	justify-content: flex-end;
 	align-items: flex-end;
-	border: 1px solid black;
 	width: 25%;
 	flex-direction: column;
 	justify-content: space-between;
@@ -156,8 +163,6 @@ const Tooltip = styled.span`
 	white-space: nowrap;
 `
 
-const TableContainer = styled.div`
-	border: 1px solid #ccc;
-`
+const TableContainer = styled.div``
 
 export default LeaderboardsTable
