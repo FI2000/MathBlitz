@@ -25,7 +25,12 @@ public class ScoreController {
     }
 
     @GetMapping("/local")
-    public ResponseEntity<?> submitUserScore(@RequestParam("userId") Integer userId) {
+    public ResponseEntity<?> getTopLocalUserScores(@RequestParam("userId") Integer userId) {
         return service.getTopLocalUserScores(userId.longValue());
+    }
+
+    @GetMapping("/top")
+    public ResponseEntity<?> getTopScores() {
+        return service.getTopScores();
     }
 }

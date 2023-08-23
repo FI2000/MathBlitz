@@ -3,7 +3,9 @@ package project.persistence.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import project.persistence.model.enums.Difficulty;
 import project.persistence.model.enums.Mods;
+import project.persistence.model.enums.Operations;
 
 import java.util.Date;
 
@@ -24,6 +26,14 @@ public class Score {
     @Enumerated(EnumType.STRING)
     @Column(name = "score_mod")
     private Mods scoreMod;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "score_difficulty")
+    private Difficulty scoreDifficulty;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "score_operations")
+    private Operations scoreOperations;
 
     @CreationTimestamp
     @Temporal(TemporalType.DATE)

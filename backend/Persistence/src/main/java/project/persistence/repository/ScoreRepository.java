@@ -15,4 +15,17 @@ public interface ScoreRepository extends CrudRepository<Score, Long> {
 
     @Query("SELECT s FROM Score s WHERE s.userId = :user_id ORDER BY s.scorePoints DESC")
     List<Score> findTop25UserScoresOrderByScoreDesc(@Param("user_id") Long userId);
+
+    @Query("SELECT s FROM Score s ORDER BY s.scorePoints DESC")
+    List<Score> findTop25ScoresOrderByScoreDesc();
+
+    @Query("SELECT s FROM Score s " +
+            "WHERE s.scorePoints IN (" +
+            "  SELECT MAX(s2.scorePoints) " +
+            "  FROM Score s2 " +
+            "  WHERE s2.username = s.username " +
+            "  GROUP BY s2.username" +
+            ") " +
+            "ORDER BY s.scorePoints DESC")
+    List<Score> findTop25UniqueScoresOrderByScoreDesc();
 }

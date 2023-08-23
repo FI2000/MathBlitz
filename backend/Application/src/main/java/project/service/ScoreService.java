@@ -4,7 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.persistence.model.Score;
+import project.persistence.model.enums.Difficulty;
 import project.persistence.model.enums.Mods;
+import project.persistence.model.enums.Operations;
 import project.persistence.repository.ScoreRepository;
 
 import java.util.Map;
@@ -28,6 +30,8 @@ public class ScoreService {
         userScore.setScoreStreak(Objects.requireNonNull((Integer) requestBody.get("scoreStreak")));
         userScore.setScoreMod(Objects.requireNonNull(Mods.valueOf(requestBody.get("scoreMod").toString())));
         userScore.setScorePoints(Objects.requireNonNull((Integer) requestBody.get("scorePoints")));
+        userScore.setScoreDifficulty(Objects.requireNonNull(Difficulty.valueOf(requestBody.get("scoreDifficulty").toString())));
+        userScore.setScoreOperations(Objects.requireNonNull(Operations.valueOf(requestBody.get("scoreOperations").toString())));
         try {
             saveScoreAndSumUserScore(userScore, userId);
         } catch (Exception e) {
@@ -45,8 +49,17 @@ public class ScoreService {
             System.err.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-
     }
+
+    public ResponseEntity<?> getTopScores() {
+        try {
+            return ResponseEntity.ok(scoreRepository.findTop25UniqueScoresOrderByScoreDesc());
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
     private void saveScoreAndSumUserScore(Score userScore, Long userId) {
         scoreRepository.save(userScore);
