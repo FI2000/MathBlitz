@@ -7,6 +7,7 @@ import { userIdState, usernameState } from '../recoilState'
 import { playCorrect } from '../service/AudioSounds'
 import { playWrong } from '../service/AudioSounds'
 import { submitUserScore } from '../service/APICalls'
+import LeaderboardsTable from './LeaderboardComponent'
 
 interface BlitzParameters {
 	mod: string | null
@@ -136,84 +137,91 @@ const BlitzComponent: React.FC<BlitzParameters> = ({
 	}
 
 	return (
-		<>
-			<BlitzInfoContainer>
-				<PromptText>
-					Total Score(x
-					{multiplier.toFixed(2)}
-					): {score}
-				</PromptText>
-				<PromptText>
-					Streak: {streak}/{maxStreak}
-				</PromptText>
-				<PromptText>
-					Time remaining:{' '}
-					{startCountdown && (
-						<Countdown
-							date={guessingDuration}
-							renderer={renderSeconds}
-							onComplete={handleCountdownComplete}
-						/>
+		<GridContainer>
+			<PageContainer>
+				<BlitzInfoContainer>
+					<PromptText>
+						Total Score(x
+						{multiplier.toFixed(2)}
+						): {score}
+					</PromptText>
+					<PromptText>
+						Streak: {streak}/{maxStreak}
+					</PromptText>
+					<PromptText>
+						Time remaining:{' '}
+						{startCountdown && (
+							<Countdown
+								date={guessingDuration}
+								renderer={renderSeconds}
+								onComplete={handleCountdownComplete}
+							/>
+						)}
+						{!startCountdown && '-'}
+					</PromptText>
+				</BlitzInfoContainer>
+				<BlitzGameContainer>
+					<EquationContainer>
+						<p>Equation:</p>
+						<p>{equation}</p>
+					</EquationContainer>
+					<ButtonGroupContainer>
+						{options.map((item, index) =>
+							mod === 'PeekABoo' ? (
+								<PeekABooButton
+									key={index}
+									onClick={() => handleAnswer(item)}
+									disabled={!guessing}
+								>
+									{' '}
+									{item}
+								</PeekABooButton>
+							) : mod === 'Memory' ? (
+								<Button
+									key={index}
+									onClick={() => handleAnswer(item)}
+									disabled={!guessing}
+								>
+									{textVisible ? item : '?'}
+								</Button>
+							) : (
+								<Button
+									key={index}
+									onClick={() => handleAnswer(item)}
+									disabled={!guessing}
+								>
+									{' '}
+									{item}
+								</Button>
+							)
+						)}
+					</ButtonGroupContainer>
+				</BlitzGameContainer>
+				<FooterContainer>
+					<PromptText>Lives:{lives}</PromptText>
+					{!guessing && lives > 0 && (
+						<StartButton onClick={() => handleRound()}> Blitz </StartButton>
 					)}
-					{!startCountdown && '-'}
-				</PromptText>
-			</BlitzInfoContainer>
-			<BlitzGameContainer>
-				<EquationContainer>
-					<p>Equation:</p>
-					<p>{equation}</p>
-				</EquationContainer>
-				<ButtonGroupContainer>
-					{options.map((item, index) =>
-						mod === 'PeekABoo' ? (
-							<PeekABooButton
-								key={index}
-								onClick={() => handleAnswer(item)}
-								disabled={!guessing}
-							>
-								{' '}
-								{item}
-							</PeekABooButton>
-						) : mod === 'Memory' ? (
-							<Button
-								key={index}
-								onClick={() => handleAnswer(item)}
-								disabled={!guessing}
-							>
-								{textVisible ? item : '?'}
-							</Button>
-						) : (
-							<Button
-								key={index}
-								onClick={() => handleAnswer(item)}
-								disabled={!guessing}
-							>
-								{' '}
-								{item}
-							</Button>
-						)
+					{lives == 0 && (
+						<SubmitButton onClick={handleSubmit} disabled={recoilId === null}>
+							{' '}
+							Submit {recoilId === null && <DisabledText>Log in</DisabledText>}
+						</SubmitButton>
 					)}
-				</ButtonGroupContainer>
-			</BlitzGameContainer>
-			<FooterContainer>
-				<PromptText>Lives:{lives}</PromptText>
-				{!guessing && lives > 0 && (
-					<StartButton onClick={() => handleRound()}> Blitz </StartButton>
-				)}
-				{lives == 0 && (
-					<SubmitButton onClick={handleSubmit} disabled={recoilId === null}>
-						{' '}
-						Submit {recoilId === null && <DisabledText>Log in</DisabledText>}
-					</SubmitButton>
-				)}
-			</FooterContainer>
-			<FeedbackContainer>
-				{lives > 0 && (
-					<FeedbackText content={feedback}>{feedback}</FeedbackText>
-				)}
-				{lives == 0 && <ResetButton onClick={handleReset}> Reset </ResetButton>}
-			</FeedbackContainer>
-		</>
+				</FooterContainer>
+				<FeedbackContainer>
+					{lives > 0 && (
+						<FeedbackText content={feedback}>{feedback}</FeedbackText>
+					)}
+					{lives == 0 && (
+						<ResetButton onClick={handleReset}> Reset </ResetButton>
+					)}
+				</FeedbackContainer>
+			</PageContainer>
+			<LeaderboardsContainer>
+				<LeaderboardsTable></LeaderboardsTable>
+			</LeaderboardsContainer>
+		</GridContainer>
 	)
 }
 
@@ -222,6 +230,28 @@ const PromptText = styled.div`
 	font-weight: bold;
 	font-size: 24px;
 	margin-bottom: 12px;
+`
+
+const PageContainer = styled.div`
+	font-family: 'PixelFont', cursive;
+	font-weight: bold;
+	font-size: 32px;
+	border: 1px solid black;
+`
+
+const LeaderboardsContainer = styled.div`
+	font-family: 'PixelFont', cursive;
+	font-weight: bold;
+	font-size: 13px;
+	border: 1px solid red;
+	margin-left: 40px;
+	margin-right: 10px;
+`
+
+const GridContainer = styled.div`
+	display: grid;
+	grid-template-columns: 2.4fr 1fr;
+	gap: 10px;
 `
 
 const EquationContainer = styled.div`
@@ -332,32 +362,6 @@ const PeekABooButton = styled.button`
                 background-color: black;
             }
         `};
-`
-
-const MemoryButton = styled.button`
-	background-color: white;
-	color: coral;
-	border: none;
-	padding: 10px 20px;
-	margin-top: 0px;
-	border-radius: 5px;
-	cursor: pointer;
-	font-family: 'PixelFont', cursive;
-	font-size: 32px;
-
-	${({ disabled }) =>
-		disabled
-			? `
-          color: green;
-          opacity: 0.6;
-          cursor: not-allowed;
-      `
-			: `
-          transition: background-color 0.3s ease-in-out;
-          &:hover {
-              background-color: black;
-          }
-      `}
 `
 
 const StartButton = styled.button`

@@ -35,7 +35,7 @@ const Container = styled.div`
 	margin-top: 6rem;
 	margin-left: 4rem;
 	flex-direction: column;
-	max-width: 1200px;
+	max-width: 1650px;
 `
 
 export default BlitzView
