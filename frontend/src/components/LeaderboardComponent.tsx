@@ -17,16 +17,16 @@ const Tabs: React.FC<TabsProps> = ({ activeTab, handleTabClick }) => {
 	return (
 		<TabsContainer>
 			<Tab active={activeTab === 0} onClick={() => handleTabClick(0)}>
-				Tab 1<Tooltip>Tooltip Text 1</Tooltip>
+				Local<Tooltip>Your local best</Tooltip>
 			</Tab>
 			<Tab active={activeTab === 1} onClick={() => handleTabClick(1)}>
-				Tab 2<Tooltip>Tooltip Text 2</Tooltip>
+				Mod<Tooltip>Global best for this specific mod</Tooltip>
 			</Tab>
 			<Tab active={activeTab === 2} onClick={() => handleTabClick(2)}>
-				Tab 3<Tooltip>Tooltip Text 3</Tooltip>
+				Score<Tooltip>Highest score for single play</Tooltip>
 			</Tab>
 			<Tab active={activeTab === 3} onClick={() => handleTabClick(3)}>
-				Tab 4<Tooltip>Tooltip Text 4</Tooltip>
+				Total<Tooltip>total score</Tooltip>
 			</Tab>
 		</TabsContainer>
 	)

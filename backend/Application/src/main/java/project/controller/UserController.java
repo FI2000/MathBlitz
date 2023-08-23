@@ -22,8 +22,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestParam("username") String username, @RequestParam("password") String password) {
-        service.registerUser(username, password);
-        return ResponseEntity.ok().build();
+        return service.registerUser(username, password);
     }
 
     @GetMapping("/profile")

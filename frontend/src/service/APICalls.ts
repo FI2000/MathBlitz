@@ -9,8 +9,10 @@ export async function registerUserProfile(
 			method: 'POST',
 		})
 
-		if (!response.ok) {
-			throw new Error('Network response was not ok')
+		if (response.status === 400) {
+			throw new Error(await response.text())
+		} else if (!response.ok) {
+			throw new Error('Network Error')
 		}
 
 		return response.status
