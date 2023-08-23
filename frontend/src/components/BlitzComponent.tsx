@@ -243,9 +243,11 @@ const LeaderboardsContainer = styled.div`
 	font-family: 'PixelFont', cursive;
 	font-weight: bold;
 	font-size: 13px;
-	border: 1px solid red;
+	border: 1px solid;
 	margin-left: 40px;
 	margin-right: 10px;
+	border-image: linear-gradient(to bottom, #ccc, transparent);
+	border-image-slice: 1;
 `
 
 const GridContainer = styled.div`

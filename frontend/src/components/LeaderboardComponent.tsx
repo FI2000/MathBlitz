@@ -6,9 +6,110 @@ interface TabsProps {
 	handleTabClick: (tabIndex: number) => void
 }
 
+interface BlitzScore {
+	scoreStreak: number
+	scorePoints: number
+	scoreMod: string
+	username: string
+}
+
+const Tabs: React.FC<TabsProps> = ({ activeTab, handleTabClick }) => {
+	return (
+		<TabsContainer>
+			<Tab active={activeTab === 0} onClick={() => handleTabClick(0)}>
+				Tab 1<Tooltip>Tooltip Text 1</Tooltip>
+			</Tab>
+			<Tab active={activeTab === 1} onClick={() => handleTabClick(1)}>
+				Tab 2<Tooltip>Tooltip Text 2</Tooltip>
+			</Tab>
+			<Tab active={activeTab === 2} onClick={() => handleTabClick(2)}>
+				Tab 3<Tooltip>Tooltip Text 3</Tooltip>
+			</Tab>
+			<Tab active={activeTab === 3} onClick={() => handleTabClick(3)}>
+				Tab 4<Tooltip>Tooltip Text 4</Tooltip>
+			</Tab>
+		</TabsContainer>
+	)
+}
+
+const LeaderboardsTable: React.FC = () => {
+	const [activeTab, setActiveTab] = useState(0)
+
+	const handleTabClick = (tabIndex: number) => {
+		setActiveTab(tabIndex)
+	}
+
+	return (
+		<TableContainer>
+			<Tabs activeTab={activeTab} handleTabClick={handleTabClick} />
+			<Divider />
+			{activeTab === 0 && (
+				<ScoreTab>
+					<ScoreTabContainerLeft>
+						<ScoreTabName>PlayerName</ScoreTabName>
+						<ScoreTabName>1543673(x32)</ScoreTabName>
+					</ScoreTabContainerLeft>
+					<ScoreTabContainerRight>
+						<ScoreTabMods>PKB</ScoreTabMods>
+						<ScoreTabDate>2021-01-11</ScoreTabDate>
+					</ScoreTabContainerRight>
+				</ScoreTab>
+			)}
+
+			{activeTab === 1 && <ScoreTab>Tab 2 Content</ScoreTab>}
+			{activeTab === 2 && <ScoreTab>Tab 3 Content</ScoreTab>}
+			{activeTab === 3 && <ScoreTab>Tab 4 Content</ScoreTab>}
+		</TableContainer>
+	)
+}
+
 const TabsContainer = styled.div`
 	display: flex;
 	justify-content: space-between;
+`
+
+const ScoreTab = styled.div`
+	display: flex;
+	border: 1px solid #ccc;
+	height: 3.4rem;
+	color: black;
+	justify-content: space-between;
+`
+const ScoreTabContainerLeft = styled.div`
+	display: flex;
+	border: 1px solid black;
+	width: 75%;
+	flex-direction: column;
+	justify-content: space-between;
+`
+
+const ScoreTabContainerRight = styled.div`
+	display: flex;
+	justify-content: flex-end;
+	align-items: flex-end;
+	border: 1px solid black;
+	width: 25%;
+	flex-direction: column;
+	justify-content: space-between;
+`
+
+const ScoreTabName = styled.div`
+	font-size: 18px;
+	padding-left: 4px;
+`
+const ScoreTabDate = styled.div`
+	font-weight: 50;
+	color: grey;
+`
+
+const ScoreTabMods = styled.div`
+	font-size: 18px;
+	padding-left: 4px;
+`
+
+const Divider = styled.div`
+	height: 2px;
+	background-color: black;
 `
 
 const Tab = styled.div<{ active: boolean }>`
@@ -40,45 +141,8 @@ const Tooltip = styled.span`
 	white-space: nowrap;
 `
 
-const Tabs: React.FC<TabsProps> = ({ activeTab, handleTabClick }) => {
-	return (
-		<TabsContainer>
-			<Tab active={activeTab === 0} onClick={() => handleTabClick(0)}>
-				Tab 1<Tooltip>Tooltip Text 1</Tooltip>
-			</Tab>
-			<Tab active={activeTab === 1} onClick={() => handleTabClick(1)}>
-				Tab 2<Tooltip>Tooltip Text 2</Tooltip>
-			</Tab>
-			<Tab active={activeTab === 2} onClick={() => handleTabClick(2)}>
-				Tab 3<Tooltip>Tooltip Text 3</Tooltip>
-			</Tab>
-			<Tab active={activeTab === 3} onClick={() => handleTabClick(3)}>
-				Tab 4<Tooltip>Tooltip Text 4</Tooltip>
-			</Tab>
-		</TabsContainer>
-	)
-}
-
 const TableContainer = styled.div`
 	border: 1px solid #ccc;
 `
-
-const LeaderboardsTable: React.FC = () => {
-	const [activeTab, setActiveTab] = useState(0)
-
-	const handleTabClick = (tabIndex: number) => {
-		setActiveTab(tabIndex)
-	}
-
-	return (
-		<TableContainer>
-			<Tabs activeTab={activeTab} handleTabClick={handleTabClick} />
-			{activeTab === 0 && <div>Tab 1 Content</div>}
-			{activeTab === 1 && <div>Tab 2 Content</div>}
-			{activeTab === 2 && <div>Tab 3 Content</div>}
-			{activeTab === 3 && <div>Tab 4 Content</div>}
-		</TableContainer>
-	)
-}
 
 export default LeaderboardsTable
