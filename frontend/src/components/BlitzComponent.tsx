@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
 import { normalDifficultyEquation } from "../service/BlitzGenerator";
 import Countdown from "react-countdown";
 import { useRecoilState } from "recoil";
@@ -8,6 +7,7 @@ import { playCorrect } from "../service/AudioSounds";
 import { playWrong } from "../service/AudioSounds";
 import { submitUserScore } from "../service/APICalls";
 import LeaderboardsTable from "./LeaderboardComponent";
+import * as styles from "../styles/BlitzComponentStyles";
 
 interface BlitzParameters {
   mod: string | null;
@@ -86,6 +86,7 @@ const BlitzComponent: React.FC<BlitzParameters> = ({ mod, difficulty, operations
     setAnswer(0);
     setFeedback("-");
     setTextVisible(true);
+    setGuessingDuration(15);
   };
 
   const handleAnswer = (chosen: number) => {
@@ -133,302 +134,63 @@ const BlitzComponent: React.FC<BlitzParameters> = ({ mod, difficulty, operations
   };
 
   return (
-    <GridContainer>
-      <PageContainer>
-        <BlitzInfoContainer>
-          <PromptText>
+    <styles.GridContainer>
+      <styles.PageContainer>
+        <styles.BlitzInfoContainer>
+          <styles.PromptText>
             Total Score(x{multiplier.toFixed(2)}): {score}
-          </PromptText>
-          <PromptText>
+          </styles.PromptText>
+          <styles.PromptText>
             Streak: {streak}/{maxStreak}
-          </PromptText>
-        </BlitzInfoContainer>
-        <BlitzGameContainer>
-          <EquationContainer>
+          </styles.PromptText>
+        </styles.BlitzInfoContainer>
+        <styles.BlitzGameContainer>
+          <styles.EquationContainer>
             <p>Equation</p>
             <p>{equation}</p>
-          </EquationContainer>
-          <ButtonGroupContainer>
+          </styles.EquationContainer>
+          <styles.ButtonGroupContainer>
             {options.map((item, index) =>
               mod === "PeekABoo" ? (
-                <PeekABooButton key={index} onClick={() => handleAnswer(item)} disabled={!guessing}>
+                <styles.PeekABooButton key={index} onClick={() => handleAnswer(item)} disabled={!guessing}>
                   {item}
-                </PeekABooButton>
+                </styles.PeekABooButton>
               ) : mod === "Memory" ? (
-                <Button key={index} onClick={() => handleAnswer(item)} disabled={!guessing}>
+                <styles.Button key={index} onClick={() => handleAnswer(item)} disabled={!guessing}>
                   {textVisible ? item : "?"}
-                </Button>
+                </styles.Button>
               ) : (
-                <Button key={index} onClick={() => handleAnswer(item)} disabled={!guessing}>
+                <styles.Button key={index} onClick={() => handleAnswer(item)} disabled={!guessing}>
                   {item}
-                </Button>
+                </styles.Button>
               )
             )}
-          </ButtonGroupContainer>
-        </BlitzGameContainer>
-        <FooterContainer>
-          <PromptText>Lives:{lives}</PromptText>
-          {!guessing && lives > 0 && <StartButton onClick={() => handleRound()}> Blitz </StartButton>}
+          </styles.ButtonGroupContainer>
+        </styles.BlitzGameContainer>
+        <styles.FooterContainer>
+          <styles.PromptText>Lives:{lives}</styles.PromptText>
+          {!guessing && lives > 0 && <styles.StartButton onClick={() => handleRound()}> Blitz </styles.StartButton>}
           {lives == 0 && (
-            <SubmitButton onClick={handleSubmit} disabled={recoilId === null}>
-              Submit {recoilId === null && <DisabledText>Log in</DisabledText>}
-            </SubmitButton>
+            <styles.SubmitButton onClick={handleSubmit} disabled={recoilId === null}>
+              Submit {recoilId === null && <styles.DisabledText>Log in</styles.DisabledText>}
+            </styles.SubmitButton>
           )}
-        </FooterContainer>
-        <FeedbackContainer>
+        </styles.FooterContainer>
+        <styles.FeedbackContainer>
           {lives > 0 &&
             (guessing ? (
               <Countdown date={guessingDuration} renderer={renderSeconds} onComplete={handleCountdownComplete} />
             ) : (
-              <FeedbackText content={feedback}>{feedback}</FeedbackText>
+              <styles.FeedbackText content={feedback}>{feedback}</styles.FeedbackText>
             ))}
-          {lives == 0 && <ResetButton onClick={handleReset}> Reset </ResetButton>}
-        </FeedbackContainer>
-      </PageContainer>
-      <LeaderboardsContainer>
+          {lives == 0 && <styles.ResetButton onClick={handleReset}> Reset </styles.ResetButton>}
+        </styles.FeedbackContainer>
+      </styles.PageContainer>
+      <styles.LeaderboardsContainer>
         <LeaderboardsTable></LeaderboardsTable>
-      </LeaderboardsContainer>
-    </GridContainer>
+      </styles.LeaderboardsContainer>
+    </styles.GridContainer>
   );
 };
-
-const PromptText = styled.div`
-  font-family: "PixelFont", cursive;
-  font-weight: bold;
-  font-size: 24px;
-  margin-bottom: 12px;
-`;
-
-const PageContainer = styled.div`
-  font-family: "PixelFont", cursive;
-  font-weight: bold;
-  font-size: 32px;
-`;
-
-const LeaderboardsContainer = styled.div`
-  font-family: "PixelFont", cursive;
-  font-weight: bold;
-  font-size: 13px;
-  border: 2px solid black;
-  margin-left: 40px;
-  margin-right: 10px;
-  border-image: linear-gradient(to bottom, black, transparent);
-  border-image-slice: 1;
-`;
-
-const GridContainer = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 10px;
-`;
-
-const EquationContainer = styled.div`
-  font-family: "PixelFont", cursive;
-  font-weight: bold;
-  font-size: 32px;
-  margin-bottom: 12px;
-  text-align: center;
-  flex-direction: column;
-`;
-
-const BlitzInfoContainer = styled.div`
-  display: flex;
-  margin-left: 4rem;
-  flex-direction: column;
-  text-align: left;
-`;
-
-const BlitzGameContainer = styled.div`
-  display: flex;
-  margin-left: 4rem;
-  height: 17rem;
-  flex-direction: column;
-  text-align: left;
-`;
-const FooterContainer = styled.div`
-  display: flex;
-  height: 90px;
-  margin-left: 4rem;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const FeedbackContainer = styled.div`
-  display: flex;
-  height: 90px;
-  margin-left: 4rem;
-  justify-content: center;
-  align-items: center;
-  font-family: "PixelFont", cursive;
-  font-weight: bold;
-  font-size: 32px;
-`;
-const FeedbackText = styled.p`
-  color: ${(props) => (props.content === "Nice" ? "green" : props.content === "Welp" ? "red" : "black")};
-`;
-
-const ButtonGroupContainer = styled.div`
-  display: flex;
-  gap: 40px;
-  justify-content: center;
-  margin-top: 1rem;
-`;
-
-const Button = styled.button`
-  background-color: white;
-  color: coral;
-  border: none;
-  padding: 10px 20px;
-  margin-top: 0px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-family: "PixelFont", cursive;
-  font-size: 32px;
-
-  ${({ disabled }) =>
-    disabled
-      ? `
-            color: grey;
-            opacity: 0.6;
-            cursor: not-allowed;
-        `
-      : `
-            transition: background-color 0.3s ease-in-out;
-            &:hover {
-                background-color: black;
-            }
-        `}
-`;
-
-const PeekABooButton = styled.button`
-  background-color: white;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  margin-top: 0px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-family: "PixelFont", cursive;
-  font-size: 32px;
-
-  ${({ disabled }) =>
-    disabled
-      ? `
-            color: grey;
-            opacity: 0.6;
-            cursor: not-allowed;
-        `
-      : `
-            transition: background-color 0.3s ease-in-out;
-            &:hover {
-                background-color: black;
-            }
-        `};
-`;
-
-const StartButton = styled.button`
-  background-color: white;
-  color: coral;
-  border: none;
-  padding: 10px 20px;
-
-  border-radius: 5px;
-  cursor: pointer;
-  font-family: "PixelFont", cursive;
-  font-size: 24px;
-  width: 155px;
-  height: 70px;
-  text-align: center;
-
-  ${({ disabled }) =>
-    disabled
-      ? `
-        color: grey;
-        opacity: 0.6;
-        cursor: not-allowed;
-    `
-      : `
-        transition: background-color 0.3s ease-in-out;
-        &:hover {
-            background-color: black;
-        }
-    `}
-`;
-
-const ResetButton = styled.button`
-  background-color: white;
-  color: coral;
-  border: none;
-  padding: 10px 20px;
-
-  border-radius: 5px;
-  cursor: pointer;
-  font-family: "PixelFont", cursive;
-  font-size: 24px;
-  width: 155px;
-  height: 70px;
-  text-align: center;
-
-  ${({ disabled }) =>
-    disabled
-      ? `
-        color: grey;
-        opacity: 0.6;
-        cursor: not-allowed;
-    `
-      : `
-        transition: background-color 0.3s ease-in-out;
-        &:hover {
-            background-color: black;
-        }
-    `}
-`;
-
-const SubmitButton = styled.button`
-  background-color: white;
-  color: coral;
-  border: none;
-  padding: 10px 20px;
-
-  border-radius: 5px;
-  font-family: "PixelFont", cursive;
-  font-size: 24px;
-  width: 155px;
-  height: 70px;
-  text-align: center;
-
-  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
-  opacity: ${(props) => (props.disabled ? 0.6 : 1)};
-
-  transition: background-color 0.3s ease-in-out;
-  &:hover {
-    ${({ disabled }) =>
-      disabled
-        ? `
-        color: grey;
-        opacity: 0.6;
-        cursor: not-allowed;
-    `
-        : `
-        transition: background-color 0.3s ease-in-out;
-        &:hover {
-            background-color: black;
-        }
-    `}
-
-    span {
-      visibility: visible;
-      margin-left: 5%;
-    }
-  }
-`;
-
-const DisabledText = styled.span`
-  margin-left: 60%;
-  color: black;
-  font-size: 14px;
-  font-weight: bold;
-  visibility: hidden;
-`;
 
 export default BlitzComponent;

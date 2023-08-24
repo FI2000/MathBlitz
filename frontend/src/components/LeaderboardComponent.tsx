@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import { getTopTotalScore, getUserTotalScore, getUserLocalScores, getTopScores } from "../service/APICalls";
 import { useRecoilState } from "recoil";
 import { userIdState, usernameState } from "../recoilState";
-import { RingLoader } from "react-spinners";
+import * as styles from "../styles/LeaderboardComponentStyles";
 
 interface TabsProps {
   activeTab: number;
@@ -27,17 +26,17 @@ interface BlitzScore {
 
 const Tabs: React.FC<TabsProps> = ({ activeTab, handleTabClick }) => {
   return (
-    <TabsContainer>
-      <Tab active={activeTab === 0} onClick={() => handleTabClick(0)}>
-        Local Scores<Tooltip>Your local best</Tooltip>
-      </Tab>
-      <Tab active={activeTab === 1} onClick={() => handleTabClick(1)}>
-        Top Scores<Tooltip>Highest score for single play</Tooltip>
-      </Tab>
-      <Tab active={activeTab === 2} onClick={() => handleTabClick(2)}>
-        Total Score<Tooltip>total score</Tooltip>
-      </Tab>
-    </TabsContainer>
+    <styles.TabsContainer>
+      <styles.Tab active={activeTab === 0} onClick={() => handleTabClick(0)}>
+        Local Scores<styles.Tooltip>Your local best</styles.Tooltip>
+      </styles.Tab>
+      <styles.Tab active={activeTab === 1} onClick={() => handleTabClick(1)}>
+        Top Scores<styles.Tooltip>Highest score for single play</styles.Tooltip>
+      </styles.Tab>
+      <styles.Tab active={activeTab === 2} onClick={() => handleTabClick(2)}>
+        Total Score<styles.Tooltip>total score</styles.Tooltip>
+      </styles.Tab>
+    </styles.TabsContainer>
   );
 };
 
@@ -80,37 +79,37 @@ const LeaderboardsTable: React.FC = () => {
 
   return (
     <>
-      <TableContainer>
+      <styles.TableContainer>
         <Tabs activeTab={activeTab} handleTabClick={handleTabClick} />
-        <Divider />
+        <styles.Divider />
         {activeTab === 0 && (
           <>
             {userLocalScores !== null ? (
               userLocalScores.map((value: BlitzScore, index: number) => {
                 return (
-                  <ScoreTab>
-                    <RankingTabContainer>#{index + 1}</RankingTabContainer>
-                    <ScoreTabContainerLeft>
-                      <ScoreTabName>{value.username}</ScoreTabName>
-                      <ScoreTabName>
+                  <styles.ScoreTab>
+                    <styles.RankingTabContainer>#{index + 1}</styles.RankingTabContainer>
+                    <styles.ScoreTabContainerLeft>
+                      <styles.ScoreTabName>{value.username}</styles.ScoreTabName>
+                      <styles.ScoreTabName>
                         {value.scorePoints}
-                        <SmallerText>pts</SmallerText>(<SmallerCombo>x</SmallerCombo>
-                        {value.scoreStreak})<OperationsText>{value.scoreOperations} </OperationsText>
-                      </ScoreTabName>
-                    </ScoreTabContainerLeft>
-                    <ScoreTabContainerRight>
-                      <ScoreTabMods>
+                        <styles.SmallerText>pts</styles.SmallerText>(<styles.SmallerCombo>x</styles.SmallerCombo>
+                        {value.scoreStreak})<styles.OperationsText>{value.scoreOperations} </styles.OperationsText>
+                      </styles.ScoreTabName>
+                    </styles.ScoreTabContainerLeft>
+                    <styles.ScoreTabContainerRight>
+                      <styles.ScoreTabMods>
                         {value.scoreDifficulty}/{value.scoreMod}
-                      </ScoreTabMods>
-                      <ScoreTabDate>{value.creationDate}</ScoreTabDate>
-                    </ScoreTabContainerRight>
-                  </ScoreTab>
+                      </styles.ScoreTabMods>
+                      <styles.ScoreTabDate>{value.creationDate}</styles.ScoreTabDate>
+                    </styles.ScoreTabContainerRight>
+                  </styles.ScoreTab>
                 );
               })
             ) : (
-              <SpinnerWrapper>
-                <StyledRingLoader color={"grey"} loading={true} size={50} />
-              </SpinnerWrapper>
+              <styles.SpinnerWrapper>
+                <styles.StyledRingLoader color={"grey"} loading={true} size={50} />
+              </styles.SpinnerWrapper>
             )}
           </>
         )}
@@ -119,29 +118,29 @@ const LeaderboardsTable: React.FC = () => {
             {topScores !== null ? (
               topScores.map((value: BlitzScore, index: number) => {
                 return (
-                  <ScoreTab>
-                    <RankingTabContainer>#{index + 1}</RankingTabContainer>
-                    <ScoreTabContainerLeft>
-                      <ScoreTabName>{value.username}</ScoreTabName>
-                      <ScoreTabName>
+                  <styles.ScoreTab>
+                    <styles.RankingTabContainer>#{index + 1}</styles.RankingTabContainer>
+                    <styles.ScoreTabContainerLeft>
+                      <styles.ScoreTabName>{value.username}</styles.ScoreTabName>
+                      <styles.ScoreTabName>
                         {value.scorePoints}
-                        <SmallerText>pts</SmallerText>(<SmallerCombo>x</SmallerCombo>
-                        {value.scoreStreak})<OperationsText>{value.scoreOperations} </OperationsText>
-                      </ScoreTabName>
-                    </ScoreTabContainerLeft>
-                    <ScoreTabContainerRight>
-                      <ScoreTabMods>
+                        <styles.SmallerText>pts</styles.SmallerText>(<styles.SmallerCombo>x</styles.SmallerCombo>
+                        {value.scoreStreak})<styles.OperationsText>{value.scoreOperations} </styles.OperationsText>
+                      </styles.ScoreTabName>
+                    </styles.ScoreTabContainerLeft>
+                    <styles.ScoreTabContainerRight>
+                      <styles.ScoreTabMods>
                         {value.scoreDifficulty}/{value.scoreMod}
-                      </ScoreTabMods>
-                      <ScoreTabDate>{value.creationDate}</ScoreTabDate>
-                    </ScoreTabContainerRight>
-                  </ScoreTab>
+                      </styles.ScoreTabMods>
+                      <styles.ScoreTabDate>{value.creationDate}</styles.ScoreTabDate>
+                    </styles.ScoreTabContainerRight>
+                  </styles.ScoreTab>
                 );
               })
             ) : (
-              <SpinnerWrapper>
-                <StyledRingLoader color={"grey"} loading={true} size={50} />
-              </SpinnerWrapper>
+              <styles.SpinnerWrapper>
+                <styles.StyledRingLoader color={"grey"} loading={true} size={50} />
+              </styles.SpinnerWrapper>
             )}
           </>
         )}
@@ -150,202 +149,40 @@ const LeaderboardsTable: React.FC = () => {
             {scoreList !== null ? (
               scoreList.map((value: totalScore, index: number) => {
                 return (
-                  <TotalScoreTab>
-                    <RankingTabContainer>#{index + 1}</RankingTabContainer>
-                    <TotalScoreTabContainer>
-                      <ScoreTabName>{value.userName}</ScoreTabName>
-                      <ScoreTabName>
+                  <styles.TotalScoreTab>
+                    <styles.RankingTabContainer>#{index + 1}</styles.RankingTabContainer>
+                    <styles.TotalScoreTabContainer>
+                      <styles.ScoreTabName>{value.userName}</styles.ScoreTabName>
+                      <styles.ScoreTabName>
                         {value.totalScore}
-                        <SmallerText>pts</SmallerText>
-                      </ScoreTabName>
-                    </TotalScoreTabContainer>
-                  </TotalScoreTab>
+                        <styles.SmallerText>pts</styles.SmallerText>
+                      </styles.ScoreTabName>
+                    </styles.TotalScoreTabContainer>
+                  </styles.TotalScoreTab>
                 );
               })
             ) : (
-              <SpinnerWrapper>
-                <StyledRingLoader color={"grey"} loading={true} size={50} />
-              </SpinnerWrapper>
+              <styles.SpinnerWrapper>
+                <styles.StyledRingLoader color={"grey"} loading={true} size={50} />
+              </styles.SpinnerWrapper>
             )}
           </>
         )}
-      </TableContainer>
+      </styles.TableContainer>
       {scoreList !== null && userTotalScore !== null && activeTab === 2 && (
-        <UserScoreTab>
-          <RankingTabContainer>#</RankingTabContainer>
-          <TotalScoreTabContainer>
-            <ScoreTabName>{userTotalScore.userName}</ScoreTabName>
-            <ScoreTabName>
+        <styles.UserScoreTab>
+          <styles.RankingTabContainer>#</styles.RankingTabContainer>
+          <styles.TotalScoreTabContainer>
+            <styles.ScoreTabName>{userTotalScore.userName}</styles.ScoreTabName>
+            <styles.ScoreTabName>
               {userTotalScore.totalScore}
-              <SmallerText>pts</SmallerText>
-            </ScoreTabName>
-          </TotalScoreTabContainer>
-        </UserScoreTab>
+              <styles.SmallerText>pts</styles.SmallerText>
+            </styles.ScoreTabName>
+          </styles.TotalScoreTabContainer>
+        </styles.UserScoreTab>
       )}
     </>
   );
 };
-
-const StyledRingLoader = styled(RingLoader)`
-  /* Your custom styles for the spinner */
-`;
-
-const SpinnerWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 30vh;
-`;
-
-const TabsContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const ScoreTab = styled.div`
-  display: flex;
-  height: 3.1rem;
-  color: black;
-  border-bottom: 1px solid grey;
-  justify-content: space-between;
-`;
-const ScoreTabContainerLeft = styled.div`
-  display: flex;
-  width: 60%;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
-const TotalScoreTab = styled.div`
-  display: flex;
-  height: 3rem;
-  color: black;
-  border-bottom: 1px solid grey;
-  opacity: 0.9;
-
-  background-color: white;
-
-  &:hover {
-    background-color: lightgrey;
-  }
-`;
-
-const UserScoreTab = styled.div`
-  display: flex;
-  height: 3rem;
-  color: coral;
-  border-bottom: 1px solid grey;
-  opacity: 0.9;
-
-  background-color: black;
-`;
-
-const TotalScoreTabContainer = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  flex-direction: column;
-`;
-
-const RankingTabContainer = styled.div`
-  display: flex;
-  width: 15%;
-  justify-content: center;
-  align-items: center;
-  font-size: 20px;
-`;
-
-const SmallerText = styled.span`
-  font-size: 9px;
-  color: grey;
-  margin-left: 3px;
-`;
-
-const OperationsText = styled.span`
-  font-size: 12px;
-  color: grey;
-`;
-
-const SmallerCombo = styled.span`
-  font-size: 12px;
-  margin-left: 3px;
-`;
-
-const ScoreTabContainerRight = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-  width: 30%;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
-const ScoreTabName = styled.div`
-  font-size: 18px;
-  padding-left: 4px;
-`;
-const ScoreTabDate = styled.div`
-  font-weight: 50;
-  color: grey;
-`;
-
-const ScoreTabMods = styled.div`
-  font-size: 12px;
-  padding-left: 4px;
-`;
-
-const Divider = styled.div`
-  height: 2px;
-  background-color: black;
-`;
-
-const Tab = styled.div<{ active: boolean }>`
-  position: relative;
-  padding: 10px 20px;
-  cursor: pointer;
-  background-color: white;
-  transition: background-color 0.3s ease-in-out;
-  border-radius: 10px;
-  color: ${(props) => (props.active ? "coral" : "black")};
-  &:hover {
-    span {
-      visibility: visible;
-      margin-left: 5%;
-    }
-  }
-`;
-
-const Tooltip = styled.span`
-  position: absolute;
-  top: -25px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.1); /* Adjust the alpha value to control transparency */
-  color: grey;
-  padding: 5px;
-  border-radius: 4px;
-  white-space: nowrap;
-  visibility: hidden;
-`;
-const TableContainer = styled.div`
-  max-height: 528.1px;
-  overflow-y: auto; /* Enable vertical scrolling when content exceeds container height */
-  overflow-x: hidden;
-
-  /* Hide the original scrollbar */
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
-
-  /* Styling the scrollbar thumb */
-  &::-webkit-scrollbar-thumb {
-    background-color: #888; /* thumb color */
-  }
-
-  /* Styling the scrollbar track */
-  &::-webkit-scrollbar-track {
-    background-color: #f0f0f0; /* track color */
-  }
-`;
 
 export default LeaderboardsTable;

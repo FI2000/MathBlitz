@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import { useRecoilState } from "recoil";
 import { usernameState } from "../recoilState";
 import { useNavigate } from "react-router-dom";
+import * as styles from "../styles/SetupViewStyles";
 
 interface BlitzParameters {
   mod: string | null;
@@ -34,198 +34,84 @@ const SetupView: React.FC = () => {
 
   return (
     <>
-      <CC>
-        <Modes>
-          <TitleMode>
-            <PromptText>Blitz</PromptText>
-          </TitleMode>
-          <ParameterContainer>
-            <SmallText>Mods</SmallText>
-            <ButtonGroupContainer>
-              <Button onClick={() => setMod("None")} style={mod === "None" ? { backgroundColor: " black" } : { backgroundColor: " white" }}>
+      <styles.CC>
+        <styles.Modes>
+          <styles.TitleMode>
+            <styles.PromptText>Blitz</styles.PromptText>
+          </styles.TitleMode>
+          <styles.ParameterContainer>
+            <styles.SmallText>Mods</styles.SmallText>
+            <styles.ButtonGroupContainer>
+              <styles.Button
+                onClick={() => setMod("None")}
+                style={mod === "None" ? { backgroundColor: " black" } : { backgroundColor: " white" }}
+              >
                 None
-              </Button>
-              <Button
+              </styles.Button>
+              <styles.Button
                 onClick={() => setMod("Memory")}
                 style={mod === "Memory" ? { backgroundColor: " black" } : { backgroundColor: " white" }}
               >
                 Memory
-              </Button>
-              <Button
+              </styles.Button>
+              <styles.Button
                 onClick={() => setMod("PeekABoo")}
                 style={mod === "PeekABoo" ? { backgroundColor: " black" } : { backgroundColor: " white" }}
               >
                 Peek-A-Boo
-              </Button>
-            </ButtonGroupContainer>
-          </ParameterContainer>
-          <ParameterContainer>
-            <SmallText>Difficulty</SmallText>
-            <ButtonGroupContainer>
-              <Button
+              </styles.Button>
+            </styles.ButtonGroupContainer>
+          </styles.ParameterContainer>
+          <styles.ParameterContainer>
+            <styles.SmallText>Difficulty</styles.SmallText>
+            <styles.ButtonGroupContainer>
+              <styles.Button
                 onClick={() => setDifficulty("Normal")}
                 style={difficulty === "Normal" ? { backgroundColor: " black" } : { backgroundColor: " white" }}
               >
                 Normal
-              </Button>
-              <Button
+              </styles.Button>
+              <styles.Button
                 onClick={() => setDifficulty("Hard")}
                 style={difficulty === "Hard" ? { backgroundColor: " black" } : { backgroundColor: " white" }}
               >
                 Hard
-              </Button>
-              <Button
+              </styles.Button>
+              <styles.Button
                 onClick={() => setDifficulty("Extreme")}
                 style={difficulty === "Extreme" ? { backgroundColor: " black" } : { backgroundColor: " white" }}
               >
                 Extreme
-              </Button>
-            </ButtonGroupContainer>
-          </ParameterContainer>
-          <ParameterContainer>
-            <SmallText>Operations</SmallText>
-            <ButtonGroupContainer>
-              <Button
+              </styles.Button>
+            </styles.ButtonGroupContainer>
+          </styles.ParameterContainer>
+          <styles.ParameterContainer>
+            <styles.SmallText>Operations</styles.SmallText>
+            <styles.ButtonGroupContainer>
+              <styles.Button
                 onClick={() => setOperation("Basic")}
                 style={operations === "Basic" ? { backgroundColor: " black" } : { backgroundColor: " white" }}
               >
                 Basic
-              </Button>
-              <Button
+              </styles.Button>
+              <styles.Button
                 onClick={() => setOperation("Advanced")}
                 style={operations === "Advanced" ? { backgroundColor: " black" } : { backgroundColor: " white" }}
               >
                 Advanced
-              </Button>
-            </ButtonGroupContainer>
-          </ParameterContainer>
-          <ScoreMultiplier>x({multiplier.toFixed(3)}) </ScoreMultiplier>
-          <StartButton disabled={!cannotStart} onClick={handleNavigation}>
+              </styles.Button>
+            </styles.ButtonGroupContainer>
+          </styles.ParameterContainer>
+          <styles.ScoreMultiplier>x({multiplier.toFixed(3)}) </styles.ScoreMultiplier>
+          <styles.StartButton disabled={!cannotStart} onClick={handleNavigation}>
             Start
-          </StartButton>
-        </Modes>
-      </CC>
+          </styles.StartButton>
+        </styles.Modes>
+      </styles.CC>
     </>
   );
 };
 
-const ButtonGroupContainer = styled.div`
-  display: flex;
-  gap: 0px;
-  justify-content: center;
-  margin-top: 1rem;
-`;
-const ScoreMultiplier = styled.div`
-  font-family: "PixelFont", cursive;
-  font-weight: bold;
-  font-size: 12px;
-  text-align: center;
-  margin-bottom: 10px;
-`;
-
-const StartButton = styled.button`
-  background-color: black;
-  color: coral;
-  border: none;
-  padding: 10px 20px;
-  margin-left: 30%;
-
-  border-radius: 5px;
-  cursor: pointer;
-  font-family: "PixelFont", cursive;
-  font-size: 24px;
-  width: 155px;
-  text-align: center;
-
-  ${({ disabled }) =>
-    disabled
-      ? `
-        color: grey;
-        opacity: 0.6;
-        cursor: not-allowed;
-    `
-      : `
-        transition: background-color 0.3s ease-in-out;
-        &:hover {
-            background-color: black;
-        }
-    `}
-`;
-
-const Button = styled.button`
-  background-color: white;
-  color: coral;
-  border: none;
-  padding: 10px 20px;
-  margin-top: 0px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-family: "PixelFont", cursive;
-
-  ${({ disabled }) =>
-    disabled
-      ? `
-            color: grey;
-            opacity: 0.6;
-            cursor: not-allowed;
-        `
-      : `
-            transition: background-color 0.3s ease-in-out;
-            &:hover {
-                background-color: black;
-            }
-        `}
-`;
-
-const TitleMode = styled.div`
-  text-align: center;
-  padding-top: 15px;
-  width: 400px;
-  height: 60px;
-`;
-
-const SmallText = styled.div`
-  font-family: "PixelFont", cursive;
-  font-weight: bold;
-  font-size: 16px;
-`;
-const ParameterContainer = styled.div`
-  text-align: center;
-  padding-top: 15px;
-  width: 400px;
-  height: 120px;
-`;
-
-const PromptText = styled.div`
-  font-family: "PixelFont", cursive;
-  font-weight: bold;
-  font-size: 24px;
-`;
-const Container = styled.div`
-  display: flex;
-  margin-top: 2rem;
-  margin-left: 4rem;
-  flex-direction: column;
-  text-align: left;
-`;
-const CC = styled.div`
-  justify-content: center;
-  display: flex;
-
-  max-width: 600px;
-  margin-top: 1rem;
-  margin-left: 32.2%;
-  height: 70vh;
-  border: 3px solid;
-  border-image: linear-gradient(to bottom, #ccc, transparent);
-  border-image-slice: 1;
-`;
-
-const Modes = styled.div`
-  display: flex;
-  width: 400px;
-  flex-direction: column;
-`;
 const calculateMultiplier = (parameter: string | null): number => {
   if (parameter === null) {
     return 1.0;
