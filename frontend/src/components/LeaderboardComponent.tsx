@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { getTopTotalScore, getUserTotalScore, getUserLocalScores, getTopScores } from "../service/APICalls";
 import { useRecoilState } from "recoil";
 import { userIdState, usernameState } from "../recoilState";
+import { RingLoader } from "react-spinners";
 
 interface TabsProps {
   activeTab: number;
@@ -84,74 +85,92 @@ const LeaderboardsTable: React.FC = () => {
         <Divider />
         {activeTab === 0 && (
           <>
-            {userLocalScores.map((value: BlitzScore, index: number) => {
-              return (
-                <ScoreTab>
-                  <RankingTabContainer>#{index + 1}</RankingTabContainer>
-                  <ScoreTabContainerLeft>
-                    <ScoreTabName>{value.username}</ScoreTabName>
-                    <ScoreTabName>
-                      {value.scorePoints}
-                      <SmallerText>pts</SmallerText>(<SmallerCombo>x</SmallerCombo>
-                      {value.scoreStreak})<OperationsText>{value.scoreOperations} </OperationsText>
-                    </ScoreTabName>
-                  </ScoreTabContainerLeft>
-                  <ScoreTabContainerRight>
-                    <ScoreTabMods>
-                      {value.scoreDifficulty}/{value.scoreMod}
-                    </ScoreTabMods>
-                    <ScoreTabDate>{value.creationDate}</ScoreTabDate>
-                  </ScoreTabContainerRight>
-                </ScoreTab>
-              );
-            })}
+            {userLocalScores !== null ? (
+              userLocalScores.map((value: BlitzScore, index: number) => {
+                return (
+                  <ScoreTab>
+                    <RankingTabContainer>#{index + 1}</RankingTabContainer>
+                    <ScoreTabContainerLeft>
+                      <ScoreTabName>{value.username}</ScoreTabName>
+                      <ScoreTabName>
+                        {value.scorePoints}
+                        <SmallerText>pts</SmallerText>(<SmallerCombo>x</SmallerCombo>
+                        {value.scoreStreak})<OperationsText>{value.scoreOperations} </OperationsText>
+                      </ScoreTabName>
+                    </ScoreTabContainerLeft>
+                    <ScoreTabContainerRight>
+                      <ScoreTabMods>
+                        {value.scoreDifficulty}/{value.scoreMod}
+                      </ScoreTabMods>
+                      <ScoreTabDate>{value.creationDate}</ScoreTabDate>
+                    </ScoreTabContainerRight>
+                  </ScoreTab>
+                );
+              })
+            ) : (
+              <SpinnerWrapper>
+                <StyledRingLoader color={"grey"} loading={true} size={50} />
+              </SpinnerWrapper>
+            )}
           </>
         )}
         {activeTab === 1 && (
           <>
-            {topScores.map((value: BlitzScore, index: number) => {
-              return (
-                <ScoreTab>
-                  <RankingTabContainer>#{index + 1}</RankingTabContainer>
-                  <ScoreTabContainerLeft>
-                    <ScoreTabName>{value.username}</ScoreTabName>
-                    <ScoreTabName>
-                      {value.scorePoints}
-                      <SmallerText>pts</SmallerText>(<SmallerCombo>x</SmallerCombo>
-                      {value.scoreStreak})<OperationsText>{value.scoreOperations} </OperationsText>
-                    </ScoreTabName>
-                  </ScoreTabContainerLeft>
-                  <ScoreTabContainerRight>
-                    <ScoreTabMods>
-                      {value.scoreDifficulty}/{value.scoreMod}
-                    </ScoreTabMods>
-                    <ScoreTabDate>{value.creationDate}</ScoreTabDate>
-                  </ScoreTabContainerRight>
-                </ScoreTab>
-              );
-            })}
+            {topScores !== null ? (
+              topScores.map((value: BlitzScore, index: number) => {
+                return (
+                  <ScoreTab>
+                    <RankingTabContainer>#{index + 1}</RankingTabContainer>
+                    <ScoreTabContainerLeft>
+                      <ScoreTabName>{value.username}</ScoreTabName>
+                      <ScoreTabName>
+                        {value.scorePoints}
+                        <SmallerText>pts</SmallerText>(<SmallerCombo>x</SmallerCombo>
+                        {value.scoreStreak})<OperationsText>{value.scoreOperations} </OperationsText>
+                      </ScoreTabName>
+                    </ScoreTabContainerLeft>
+                    <ScoreTabContainerRight>
+                      <ScoreTabMods>
+                        {value.scoreDifficulty}/{value.scoreMod}
+                      </ScoreTabMods>
+                      <ScoreTabDate>{value.creationDate}</ScoreTabDate>
+                    </ScoreTabContainerRight>
+                  </ScoreTab>
+                );
+              })
+            ) : (
+              <SpinnerWrapper>
+                <StyledRingLoader color={"grey"} loading={true} size={50} />
+              </SpinnerWrapper>
+            )}
           </>
         )}
         {activeTab === 2 && (
           <>
-            {scoreList.map((value: totalScore, index: number) => {
-              return (
-                <TotalScoreTab>
-                  <RankingTabContainer>#{index + 1}</RankingTabContainer>
-                  <TotalScoreTabContainer>
-                    <ScoreTabName>{value.userName}</ScoreTabName>
-                    <ScoreTabName>
-                      {value.totalScore}
-                      <SmallerText>pts</SmallerText>
-                    </ScoreTabName>
-                  </TotalScoreTabContainer>
-                </TotalScoreTab>
-              );
-            })}
+            {scoreList !== null ? (
+              scoreList.map((value: totalScore, index: number) => {
+                return (
+                  <TotalScoreTab>
+                    <RankingTabContainer>#{index + 1}</RankingTabContainer>
+                    <TotalScoreTabContainer>
+                      <ScoreTabName>{value.userName}</ScoreTabName>
+                      <ScoreTabName>
+                        {value.totalScore}
+                        <SmallerText>pts</SmallerText>
+                      </ScoreTabName>
+                    </TotalScoreTabContainer>
+                  </TotalScoreTab>
+                );
+              })
+            ) : (
+              <SpinnerWrapper>
+                <StyledRingLoader color={"grey"} loading={true} size={50} />
+              </SpinnerWrapper>
+            )}
           </>
         )}
       </TableContainer>
-      {activeTab === 2 && (
+      {scoreList !== null && userTotalScore !== null && activeTab === 2 && (
         <UserScoreTab>
           <RankingTabContainer>#</RankingTabContainer>
           <TotalScoreTabContainer>
@@ -166,6 +185,17 @@ const LeaderboardsTable: React.FC = () => {
     </>
   );
 };
+
+const StyledRingLoader = styled(RingLoader)`
+  /* Your custom styles for the spinner */
+`;
+
+const SpinnerWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30vh;
+`;
 
 const TabsContainer = styled.div`
   display: flex;
@@ -289,13 +319,13 @@ const Tooltip = styled.span`
   top: -25px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.1); /* Adjust the alpha value to control transparency */
   color: grey;
   padding: 5px;
   border-radius: 4px;
   white-space: nowrap;
+  visibility: hidden;
 `;
-
 const TableContainer = styled.div`
   max-height: 528.1px;
   overflow-y: auto; /* Enable vertical scrolling when content exceeds container height */

@@ -15,19 +15,24 @@ const LoginPrompt: React.FC = () => {
   const [recoilName, setRecoilName] = useRecoilState(usernameState);
 
   const [incorrectLogin, setIncorrectLogin] = useState(false);
+  const [incorrectLoginFeedback, setIncorrectLoginFeedback] = useState("");
 
   const handleLogin = async () => {
     const fetchedData = await fetchUserProfile(username, password);
-    if (fetchedData) {
+
+    if (fetchedData === 500) {
+      setIncorrectLoginFeedback("Server Error");
+      setIncorrectLogin(true);
+    } else if (fetchedData === 400) {
+      setIncorrectLoginFeedback("Invalid Login");
+      setIncorrectLogin(true);
+    } else {
       setIncorrectLogin(false);
       setRecoilId(fetchedData["id"]);
       setRecoilName(fetchedData["username"]);
       localStorage.setItem("id", JSON.stringify(fetchedData["id"]));
       localStorage.setItem("username", JSON.stringify(fetchedData["username"]));
       navigate("/");
-    } else {
-      setIncorrectLogin(true);
-      console.log(fetchedData);
     }
   };
 
@@ -41,7 +46,7 @@ const LoginPrompt: React.FC = () => {
     <PromptContainer>
       <Container>
         <PromptText>Username</PromptText>
-        {incorrectLogin && <IncorrectLoginPrompt> Invalid </IncorrectLoginPrompt>}
+        {incorrectLogin && <IncorrectLoginPrompt> {incorrectLoginFeedback} </IncorrectLoginPrompt>}
       </Container>
 
       <StyledInput type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />

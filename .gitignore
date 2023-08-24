@@ -25,3 +25,4 @@ replay_pid*
 
 .idea
 backend/Persistence/src/main/resources/unauthorized-users.txt
+frontend/.env

@@ -40,12 +40,18 @@ public class UserService {
         return ResponseEntity.ok().build();
     }
 
-    public Optional<UserProfile> getUser(String username, String password) {
-        Optional<UserProfile> user = userRepository.findByUserName(username);
-        if (user.isPresent() && isValidLogin(user.get().getUserPassword(), password)) {
-            return user;
+    public ResponseEntity<?> getUser(String username, String password) {
+        Optional<UserProfile> userProfile = userRepository.findByUserName(username);
+        if (userProfile.isPresent() && isValidLogin(userProfile.get().getUserPassword(), password)) {
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("id", userProfile.get().getId());
+            responseBody.put("username", userProfile.get().getUserName());
+
+            return ResponseEntity.ok(responseBody);
+        } else {
+            return ResponseEntity.badRequest().build();
         }
-        return Optional.empty();
+
     }
 
     public void sumUserScore(Integer totalScore, Long userId) {

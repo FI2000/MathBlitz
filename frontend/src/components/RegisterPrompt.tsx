@@ -9,16 +9,25 @@ const RegisterPrompt: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [incorrectUsername, setIncorrectUsername] = useState(false);
+  const [incorrectUsernameFeedback, setIncorrectUsernameFeedback] = useState("");
 
   const handleRegister = async () => {
     if (username.length >= 3 && username.length <= 12) {
       const status = await registerUserProfile(username, password);
       if (status === 200) {
         navigate("/Login");
-      } else {
-        setIncorrectUsername(false);
+      } else if (status === 500) {
+        setIncorrectUsernameFeedback("Server Error");
+        setIncorrectUsername(true);
+      } else if (status === 400) {
+        setIncorrectUsernameFeedback("Username taken");
+        setIncorrectUsername(true);
+      } else if (status === 401) {
+        setIncorrectUsernameFeedback("Inappropriate name");
+        setIncorrectUsername(true);
       }
     } else {
+      setIncorrectUsernameFeedback("Invalid Length");
       setIncorrectUsername(true);
     }
   };
@@ -29,7 +38,7 @@ const RegisterPrompt: React.FC = () => {
     <PromptContainer>
       <Container>
         <PromptText>Username</PromptText>
-        {incorrectUsername && <IncorrectLoginPrompt> Invalid Length </IncorrectLoginPrompt>}
+        {incorrectUsername && <IncorrectLoginPrompt> {incorrectUsernameFeedback} </IncorrectLoginPrompt>}
       </Container>
       <StyledInput type="text" placeholder="Username (3-12 characters)" value={username} onChange={(e) => setUsername(e.target.value)} />
       <PromptText>Password</PromptText>
@@ -66,7 +75,7 @@ const IncorrectLoginPrompt = styled.div`
   font-weight: bold;
   font-size: 10px;
   align-self: flex-end;
-  color: red;
+  color: black;
 `;
 
 const Button = styled.button`

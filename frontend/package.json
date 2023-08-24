@@ -15,6 +15,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0",
     "react-scripts": "5.0.1",
+    "react-spinners": "^0.13.8",
     "recoil": "^0.7.7",
     "recoil-persist": "^5.1.0",
     "styled-components": "^6.0.7",
@@ -45,7 +46,7 @@
       "last 1 safari version"
     ]
   },
-"prettier": {
-"printWidth": 140}
-
+  "prettier": {
+    "printWidth": 140
+  }
 }

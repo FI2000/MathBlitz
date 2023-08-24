@@ -46,7 +46,7 @@ const BlitzComponent: React.FC<BlitzParameters> = ({ mod, difficulty, operations
 
   const [guessing, setGuessing] = useState(false);
   const [startCountdown, setStartCountdown] = useState(false);
-  const [feedback, setFeedback] = useState("...");
+  const [feedback, setFeedback] = useState("-");
   const [guessingDuration, setGuessingDuration] = useState(15);
   const [textVisible, setTextVisible] = useState(true);
 
@@ -68,7 +68,7 @@ const BlitzComponent: React.FC<BlitzParameters> = ({ mod, difficulty, operations
     }, (15000 - Math.min(Math.floor(streak * 0.5) * 1000, 10000)) * 0.4);
     setGuessing(true);
     setStartCountdown(true);
-    setFeedback("...");
+    setFeedback("-");
 
     const round: BlitzRound = normalDifficultyEquation();
     setEquation(round.equation);
@@ -84,7 +84,7 @@ const BlitzComponent: React.FC<BlitzParameters> = ({ mod, difficulty, operations
     setEquation("");
     setOptions([]);
     setAnswer(0);
-    setFeedback("...");
+    setFeedback("-");
     setTextVisible(true);
   };
 
@@ -145,7 +145,7 @@ const BlitzComponent: React.FC<BlitzParameters> = ({ mod, difficulty, operations
         </BlitzInfoContainer>
         <BlitzGameContainer>
           <EquationContainer>
-            <p>Equation:</p>
+            <p>Equation</p>
             <p>{equation}</p>
           </EquationContainer>
           <ButtonGroupContainer>
@@ -171,7 +171,6 @@ const BlitzComponent: React.FC<BlitzParameters> = ({ mod, difficulty, operations
           {!guessing && lives > 0 && <StartButton onClick={() => handleRound()}> Blitz </StartButton>}
           {lives == 0 && (
             <SubmitButton onClick={handleSubmit} disabled={recoilId === null}>
-              {" "}
               Submit {recoilId === null && <DisabledText>Log in</DisabledText>}
             </SubmitButton>
           )}
@@ -204,7 +203,6 @@ const PageContainer = styled.div`
   font-family: "PixelFont", cursive;
   font-weight: bold;
   font-size: 32px;
-  border: 1px solid black;
 `;
 
 const LeaderboardsContainer = styled.div`
@@ -246,13 +244,12 @@ const BlitzGameContainer = styled.div`
   height: 17rem;
   flex-direction: column;
   text-align: left;
-  border: 1px solid black;
 `;
 const FooterContainer = styled.div`
   display: flex;
   height: 90px;
   margin-left: 4rem;
-  text-align: left;
+  justify-content: space-between;
   align-items: center;
 `;
 
@@ -335,8 +332,6 @@ const StartButton = styled.button`
   border: none;
   padding: 10px 20px;
 
-  margin-left: 75%;
-
   border-radius: 5px;
   cursor: pointer;
   font-family: "PixelFont", cursive;
@@ -394,8 +389,6 @@ const SubmitButton = styled.button`
   color: coral;
   border: none;
   padding: 10px 20px;
-
-  margin-left: 75%;
 
   border-radius: 5px;
   font-family: "PixelFont", cursive;
