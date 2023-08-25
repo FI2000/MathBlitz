@@ -9,8 +9,8 @@ const Homeview: React.FC = () => {
         <br />
         <styles.PromptText>
           This site hosts a mini game that consists of calculating the answer to a random equation that pops on your screen while racing
-          against a timer. You have three lives in total, each wrong guess removes one. The timer becomes shorter and shorter as you build
-          your streak, which is the number of right guesses in a row. I call these games 'Blitzes'. (Tip: Higher Streak = More Score!)
+          against a timer. You have a number of lives, each wrong guess removes one. The timer becomes shorter and shorter as you build your
+          streak, which is the number of right guesses in a row. I call these games 'Blitzes'. (Tip: Higher Streak = More Score!)
         </styles.PromptText>
         <br />
         <styles.PromptText>
