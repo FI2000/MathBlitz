@@ -72,7 +72,7 @@ export const FeedbackContainer = styled.div`
   font-size: 32px;
 `;
 export const FeedbackText = styled.p`
-  color: ${(props) => (props.content === "Nice" ? "green" : props.content === "Welp" ? "red" : "black")};
+  color: ${(props) => (props.content === "Correct!" ? "green" : props.content === "Wrong..." ? "red" : "black")};
 `;
 
 export const ButtonGroupContainer = styled.div`

@@ -3,6 +3,7 @@ import { useRecoilState } from "recoil";
 import { usernameState } from "../recoilState";
 import { useNavigate } from "react-router-dom";
 import * as styles from "../styles/SetupViewStyles";
+import { calculateMultiplier } from "../service/BlitzGenerator";
 
 interface BlitzParameters {
   mod: string | null;
@@ -102,7 +103,7 @@ const SetupView: React.FC = () => {
               </styles.Button>
             </styles.ButtonGroupContainer>
           </styles.ParameterContainer>
-          <styles.ScoreMultiplier>x({multiplier.toFixed(3)}) </styles.ScoreMultiplier>
+          <styles.ScoreMultiplier>x({multiplier.toFixed(1)}) </styles.ScoreMultiplier>
           <styles.StartButton disabled={!cannotStart} onClick={handleNavigation}>
             Start
           </styles.StartButton>
@@ -110,32 +111,6 @@ const SetupView: React.FC = () => {
       </styles.CC>
     </>
   );
-};
-
-const calculateMultiplier = (parameter: string | null): number => {
-  if (parameter === null) {
-    return 1.0;
-  }
-  switch (parameter) {
-    case "None":
-      return 1.0;
-    case "Memory":
-      return 1.7;
-    case "Peek-A-Boo":
-      return 1.2;
-    case "Normal":
-      return 1.0;
-    case "Hard":
-      return 1.3;
-    case "Extreme":
-      return 1.7;
-    case "Basic":
-      return 1.0;
-    case "Advanced":
-      return 1.4;
-    default:
-      return 1.0;
-  }
 };
 
 export default SetupView;

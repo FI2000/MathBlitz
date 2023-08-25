@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { normalDifficultyEquation } from "../service/BlitzGenerator";
-import Countdown from "react-countdown";
+import { generateEquation, getInitialTimer, getMinimalTimer, getPlayerLives } from "../service/BlitzGenerator";
 import { useRecoilState } from "recoil";
 import { userIdState, usernameState } from "../recoilState";
 import { playCorrect } from "../service/AudioSounds";
 import { playWrong } from "../service/AudioSounds";
 import { submitUserScore } from "../service/APICalls";
+import Countdown from "./CountdownComponent";
 import LeaderboardsTable from "./LeaderboardComponent";
 import * as styles from "../styles/BlitzComponentStyles";
 
@@ -36,41 +36,46 @@ const BlitzComponent: React.FC<BlitzParameters> = ({ mod, difficulty, operations
   const [recoilId, setRecoilId] = useRecoilState(userIdState);
   const [recoilName, setRecoilName] = useRecoilState(usernameState);
 
+  const initialTimerValue = getInitialTimer(difficulty, operations) || 15;
+  const minimalTimerValue = getMinimalTimer(difficulty, operations) || 5;
+  const playerLives = getPlayerLives(difficulty, operations) || 3;
+
   const [score, setScore] = useState<number>(0);
   const [streak, setStreak] = useState<number>(1);
   const [maxStreak, setMaxStreak] = useState<number>(1);
-  const [lives, setLives] = useState<number>(3);
+  const [lives, setLives] = useState<number>(playerLives);
   const [equation, setEquation] = useState<string | null>(null);
   const [options, setOptions] = useState<number[]>([]);
   const [answer, setAnswer] = useState<number>(0);
-
   const [guessing, setGuessing] = useState(false);
-  const [startCountdown, setStartCountdown] = useState(false);
   const [feedback, setFeedback] = useState("-");
-  const [guessingDuration, setGuessingDuration] = useState(15);
   const [textVisible, setTextVisible] = useState(true);
+
+  const [timer, setTimer] = useState(initialTimerValue);
+  const [remainingSeconds, setRemainingSeconds] = useState(0);
+  const [timeoutId, setTimeoutId] = useState<number | undefined>(undefined);
 
   const handleCountdownComplete = () => {
     playWrong();
-    setFeedback("Welp");
+    setFeedback("Wrong...");
     setGuessing(false);
-    setStartCountdown(false);
     setStreak(1);
     setLives(lives - 1);
     setTextVisible(true);
+    setTimer(initialTimerValue);
+    window.clearTimeout(timeoutId);
   };
 
   const handleRound = () => {
-    setGuessingDuration(Date.now() + 15000 - Math.min(Math.floor(streak * 0.5) * 1000, 10000));
-
-    setTimeout(() => {
-      setTextVisible(false);
-    }, (15000 - Math.min(Math.floor(streak * 0.5) * 1000, 10000)) * 0.4);
-    setGuessing(true);
-    setStartCountdown(true);
     setFeedback("-");
+    setGuessing(true);
 
-    const round: BlitzRound = normalDifficultyEquation();
+    const id: number = window.setTimeout(() => {
+      setTextVisible(false);
+    }, Math.ceil(timer * 0.44) * 1000);
+    setTimeoutId(id);
+
+    const round: BlitzRound = generateEquation(difficulty, operations);
     setEquation(round.equation);
     setOptions(round.options);
     setAnswer(round.answer);
@@ -86,30 +91,33 @@ const BlitzComponent: React.FC<BlitzParameters> = ({ mod, difficulty, operations
     setAnswer(0);
     setFeedback("-");
     setTextVisible(true);
-    setGuessingDuration(15);
+    setTimer(initialTimerValue);
+    window.clearTimeout(timeoutId);
   };
 
   const handleAnswer = (chosen: number) => {
+    let timeTaken = timer - remainingSeconds;
     setTextVisible(true);
-    let timeTaken = Math.floor((15000 - Math.floor(streak * 0.1) * 1000 - (guessingDuration - Date.now())) / 1000);
     setGuessing(false);
-    setStartCountdown(false);
-
+    window.clearTimeout(timeoutId);
     if (answer === chosen) {
       playCorrect();
       setScore(Math.ceil(score + streak * 100 * multiplier - 10 * timeTaken));
       setMaxStreak(Math.max(maxStreak, streak + 1));
       setStreak(streak + 1);
-      if (streak % 2 == 0 && streak !== 0 && streak < 20) {
+
+      if (streak % 3 == 0 && streak !== 0 && streak < 20) {
+        setTimer(Math.max(Math.floor(timer - streak / 3), minimalTimerValue));
         setFeedback("Timer shortened");
       } else {
-        setFeedback("Nice");
+        setFeedback("Correct!");
       }
     } else {
       playWrong();
       setStreak(1);
       setLives(lives - 1);
-      setFeedback("Welp");
+      setFeedback("Wrong...");
+      setTimer(initialTimerValue);
     }
   };
 
@@ -129,8 +137,8 @@ const BlitzComponent: React.FC<BlitzParameters> = ({ mod, difficulty, operations
     }
   };
 
-  const renderSeconds = ({ seconds }: any) => {
-    return <span>{seconds}</span>;
+  const handleTick = (seconds: number) => {
+    setRemainingSeconds(seconds);
   };
 
   return (
@@ -138,7 +146,7 @@ const BlitzComponent: React.FC<BlitzParameters> = ({ mod, difficulty, operations
       <styles.PageContainer>
         <styles.BlitzInfoContainer>
           <styles.PromptText>
-            Total Score(x{multiplier.toFixed(2)}): {score}
+            Total Score(x{multiplier.toFixed(1)}): {score}
           </styles.PromptText>
           <styles.PromptText>
             Streak: {streak}/{maxStreak}
@@ -179,7 +187,7 @@ const BlitzComponent: React.FC<BlitzParameters> = ({ mod, difficulty, operations
         <styles.FeedbackContainer>
           {lives > 0 &&
             (guessing ? (
-              <Countdown date={guessingDuration} renderer={renderSeconds} onComplete={handleCountdownComplete} />
+              <Countdown initialSeconds={timer} onComplete={handleCountdownComplete} onTick={handleTick} />
             ) : (
               <styles.FeedbackText content={feedback}>{feedback}</styles.FeedbackText>
             ))}
